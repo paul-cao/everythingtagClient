@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DeviceName"
+            android:id="@+id/tvDevName"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDevNameVal"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Device Specify ID"
+            android:id="@+id/tvDevMac"
+            android:layout_below="@+id/tvDevName"
+            android:layout_alignParentLeft="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDevMacVal"
+            android:layout_below="@+id/tvDevNameVal"
+            android:layout_centerHorizontal="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alias"
+            android:id="@+id/tvDevAlias"
+            android:layout_below="@+id/tvDevMac"
+            android:layout_alignParentLeft="true"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/edDevAlias"
+            android:layout_below="@+id/tvDevNameVal"
+            android:layout_alignLeft="@+id/tvDevNameVal"
+            android:layout_alignParentRight="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:id="@+id/tvDevDesp"
+            android:layout_below="@+id/tvDevAlias"
+            android:layout_alignParentLeft="true"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/edDevDesp"
+            android:layout_below="@+id/tvDevAlias"
+            android:layout_alignLeft="@+id/edDevAlias"
+            android:layout_alignParentRight="true"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="   OK   "
+            android:id="@+id/btDevInfoOk"
+            android:layout_below="@+id/edDevDesp"
+            android:layout_alignRight="@+id/tvDevMacVal"
+            android:layout_marginTop="15dp"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/btDevInfoCancel"
+            android:layout_alignTop="@+id/btDevInfoOk"
+            android:layout_toRightOf="@+id/btDevInfoOk"/>
+</RelativeLayout><!-- From: file:/C:/Users/user/AndroidStudioProjects/ZCsoftwareProject/ZCsoftware/src/main/res/layout/dev_devinfo.xml -->

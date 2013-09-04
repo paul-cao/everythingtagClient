@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="274dp"
+            android:layout_gravity="left|center_vertical">
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/itfSelBlt"
+                android:id="@+id/hwitfsel_blue"
+                android:layout_gravity="left|center_vertical"/>
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/itfSelBle"
+                android:id="@+id/hwitfsel_ble"
+                android:layout_gravity="left|center_vertical"/>
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/itfSelHal"
+                android:id="@+id/hwitf_sel_halo"
+                android:layout_gravity="left|center_vertical"/>
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/itfSelWfi"
+                android:id="@+id/hwitf_sel_wifi"
+                android:layout_gravity="left|center_vertical"/>
+    </RadioGroup>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/itfSelBtn"
+            android:id="@+id/hwitfsel_btSure"
+            android:layout_gravity="center"/>
+
+</LinearLayout><!-- From: file:/C:/Users/user/AndroidStudioProjects/ZCsoftwareProject/ZCsoftware/src/main/res/layout/hwinf_select.xml -->

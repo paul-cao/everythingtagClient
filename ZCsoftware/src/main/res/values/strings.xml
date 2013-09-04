@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Everything Tag</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Strings in the MainView -->
+    <string name="mainBtReg">Register Device</string>
+    <string name="mainBtLoc">Local Search</string>
+    <string name="mainBtGol">Global Search</string>
+    <string name="mainBtData">Data Backup</string>
+    <string name="mainBtGlo">Global Search</string>
+
+    <!-- Strings in the HW Interface Selected -->
+    <string name="itfSelBlt">BlueTooth</string>
+    <string name="itfSelBle">BlueTooth LOW ENERGY</string>
+    <string name="itfSelHal">PHONE HALO</string>
+    <string name="itfSelWfi">WIFI</string>
+    <string name="itfSelBtn"> OK </string>
+    <string name="itfSelZig1">ZigBee</string>
+
+</resources>

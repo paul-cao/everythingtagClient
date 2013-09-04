@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.example.zcsoftware">
+
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16"/>
+
+    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:theme="@style/AppTheme">
+        <activity android:label="@string/app_name" android:name="com.example.zcsoftware.Viewer.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.example.zcsoftware.Viewer.activity_hwInterfaceSelect"/>
+        <activity android:name="com.example.zcsoftware.Viewer.activity_regdevselect"/>
+        <activity android:name="com.example.zcsoftware.Viewer.activity_devinfo"/>
+        <activity android:name="com.example.zcsoftware.Viewer.activity_LocSearchDevSelect"/>
+
+        <provider android:authorities="com.example.zcsoftware.DBModel" android:name="com.example.zcsoftware.DBModel.DeviceDBProvider"/>
+    </application>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+</manifest>

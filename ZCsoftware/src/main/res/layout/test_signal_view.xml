@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="#ffffff"
+    android:baselineAligned="true">
+
+    <!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android">-->
+    <!--<item android:drawable="@drawable/t" />-->
+    <!--<item android:drawable="@drawable/tt" />-->
+    <!--</layer-list>-->
+
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="146dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center"
+        android:background="@drawable/signal_ndot_mask"
+        android:layout_marginTop="20dip"
+        android:layout_marginBottom="0dip"/>
+
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="74dp"
+        android:id="@+id/signal_dot"
+        android:background="@drawable/signal_dot2"
+        android:layout_gravity="center"
+        />
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text=""-->
+    <!--android:id="@+id/tvSearchNameVal"-->
+    <!--android:layout_gravity="left|center_vertical"/>-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Activity"
+        android:id="@+id/tvSearchName"
+        android:layout_gravity="center"
+        android:textSize="20dip"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/tvSearchRSSI"
+        android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RSSI value unknown"
+        android:id="@+id/tvSearchRSSIValue"
+        android:layout_gravity="center"
+        android:textSize="18dip"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/tvSearchDistance"
+        android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" Searching..."
+        android:id="@+id/tvSearchDistanceValue"
+        android:layout_gravity="center"
+        android:textSize="20dip"/>
+</LinearLayout>

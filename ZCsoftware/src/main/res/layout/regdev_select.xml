@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:text="The Bluetooth devices nearby:"
+        android:layout_width="match_parent"
+        android:layout_height="30dip"
+        android:textSize="20dip"
+        android:layout_margin="5dip"/>
+
+    <!--<AutoCompleteTextView-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/atTvRegDevSearch"-->
+            <!--android:layout_gravity="left|center_vertical"/>-->
+
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="349dp"
+            android:id="@+id/lvRegDevList"
+            android:layout_gravity="left|center_vertical"/>
+
+    <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="InterfaceSelect"-->
+            <!--android:id="@+id/btRegItfSel"-->
+            <!--android:layout_gravity="center"/>-->
+</LinearLayout>

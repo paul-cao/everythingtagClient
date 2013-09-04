@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="device ID: 39IUO9092324UI"
+            android:id="@+id/textView4"
+            android:layout_alignParentTop="true"/>
+
+    <ImageView
+            android:layout_width="104dp"
+            android:layout_height="88dp"
+            android:id="@+id/imageView"
+            android:layout_gravity="left|center_vertical"
+            android:src="@drawable/ttype1"
+            android:layout_margin="11dp"
+            android:layout_below="@+id/textView4"
+            android:layout_toLeftOf="@+id/editText"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="specify device name"
+            android:id="@+id/editText"
+            android:layout_alignTop="@+id/imageView"
+            android:layout_alignLeft="@+id/button">
+
+    </EditText>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="change picture"
+            android:id="@+id/button"
+            android:layout_alignBottom="@+id/imageView"
+            android:layout_alignLeft="@+id/textView"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="device category"
+            android:id="@+id/textView"
+            android:layout_marginBottom="22dp"
+            android:layout_above="@+id/radioButton4"
+            android:layout_centerHorizontal="true"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="camera"
+            android:id="@+id/radioButton"
+            android:checked="false"
+            android:layout_above="@+id/radioButton2"
+            android:layout_alignLeft="@+id/imageView"
+            android:layout_marginBottom="12dp"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tile"
+            android:id="@+id/radioButton2"
+            android:checked="false"
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@+id/radioButton"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="keyboard"
+            android:id="@+id/radioButton3"
+            android:checked="false"
+            android:layout_above="@+id/checkBox"
+            android:layout_alignLeft="@+id/radioButton2"
+            android:layout_marginBottom="14dp"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="key"
+            android:id="@+id/radioButton4"
+            android:layout_alignTop="@+id/radioButton"
+            android:layout_alignLeft="@+id/textView"
+            android:checked="false"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="phone"
+            android:id="@+id/radioButton5"
+            android:layout_alignTop="@+id/radioButton4"
+            android:layout_alignRight="@+id/editText"
+            android:checked="false"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="earphone"
+            android:id="@+id/radioButton6"
+            android:checked="false"
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@+id/radioButton4"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="car"
+            android:id="@+id/radioButton7"
+            android:checked="false"
+            android:layout_alignTop="@+id/radioButton6"
+            android:layout_alignLeft="@+id/radioButton5"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="trackr"
+            android:id="@+id/radioButton8"
+            android:checked="false"
+            android:layout_alignTop="@+id/radioButton3"
+            android:layout_alignLeft="@+id/radioButton6"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="i dont know"
+            android:id="@+id/radioButton9"
+            android:checked="false"
+            android:layout_alignTop="@+id/radioButton8"
+            android:layout_alignLeft="@+id/radioButton7"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Enable Global Track"
+            android:id="@+id/textView2"
+            android:layout_above="@+id/checkBox2"
+            android:layout_alignLeft="@+id/textView3"
+            android:layout_marginBottom="16dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="It is LOST"
+            android:id="@+id/textView3"
+            android:layout_above="@+id/button2"
+            android:layout_alignRight="@+id/radioButton"
+            android:layout_marginBottom="21dp"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable"
+            android:id="@+id/checkBox"
+            android:checked="false"
+            android:layout_alignBaseline="@+id/textView2"
+            android:layout_alignBottom="@+id/textView2"
+            android:layout_alignLeft="@+id/radioButton9"/>
+
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="lost"
+            android:id="@+id/checkBox2"
+            android:checked="false"
+            android:layout_alignBaseline="@+id/textView3"
+            android:layout_alignBottom="@+id/textView3"
+            android:layout_alignLeft="@+id/checkBox"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="done"
+            android:id="@+id/button2"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/radioButton8"
+            android:layout_marginBottom="29dp"
+            android:layout_toLeftOf="@+id/checkBox2"/>
+
+
+
+
+</RelativeLayout>

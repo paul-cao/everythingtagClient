@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <!--<AutoCompleteTextView-->
+            <!--android:layout_width="100dip"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="New AutoCompleteTextView"-->
+            <!--android:id="@+id/autoCompleteTextView"-->
+            <!--android:layout_gravity="left|center_vertical"/>-->
+
+    <!--<Button-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Register New Device"-->
+            <!--android:id="@+id/btRegDev"-->
+            <!--android:layout_gravity="left|center_vertical"/>-->
+
+    <Button
+        android:text="Bluetooth Regular"
+        android:id="@+id/addnew_bt_btn"
+        android:layout_marginTop="10dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="Bluetooth Low Energy"
+        android:id="@+id/addnew_ble_btn"
+        android:layout_marginTop="5dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="Wifi Hot Spot"
+        android:id="@+id/addnew_wifi_btn"
+        android:layout_marginTop="5dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="Phone Halo"
+        android:id="@+id/addnew_ph_btn"
+        android:layout_marginTop="5dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:text="test signal view"
+        android:id="@+id/addnew_test_btn"
+        android:layout_marginTop="5dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/lvLocSearchDevSel"
+            android:layout_gravity="left|center_vertical"/>
+</LinearLayout>

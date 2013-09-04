@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:id="@+id/tvDevName"
+            android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+            android:layout_width="381dp"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/tvDevNameVal"
+            android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mac"
+            android:id="@+id/tvDevMac"
+            android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+            android:layout_width="381dp"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/tvDevMacVal"
+            android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+            android:layout_width="381dp"
+            android:layout_height="wrap_content"
+            android:text="Alias"
+            android:id="@+id/tvDevAlias"
+            android:layout_gravity="left|center_vertical"/>
+
+    <EditText
+            android:layout_width="381dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/edDevAlias"
+            android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:id="@+id/tvDevDesp"
+            android:layout_gravity="left|center_vertical"/>
+
+    <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edDevDesp"
+            android:layout_gravity="left|center_vertical"/>
+
+    <Button
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:id="@+id/btDevInfoOk"
+            android:layout_gravity="left|center_vertical"/>
+
+    <Button
+            android:layout_width="307dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/btDevInfoCancel"
+            android:layout_gravity="left|center_vertical"/>
+</LinearLayout>

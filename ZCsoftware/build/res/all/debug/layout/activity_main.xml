@@ -1,0 +1,27 @@
+<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mainBtRegister"
+            android:layout_gravity="center"
+            android:text="@string/mainBtReg"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mainBtGlobal"
+            android:layout_gravity="center"
+            android:text="Global Search"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data Backup"
+            android:id="@+id/mainBtData"
+            android:layout_gravity="center"/>
+</LinearLayout><!-- From: file:/C:/Users/user/AndroidStudioProjects/ZCsoftwareProject/ZCsoftware/src/main/res/layout/activity_main.xml -->
