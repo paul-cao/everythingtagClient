@@ -15,7 +15,7 @@ public class HwScannerBluetooth implements HwScanner {
         ArrayList<HWDevice> temp = new ArrayList<HWDevice>();
         for (int i = 0; i < testdata.length; i++)
         {
-            temp.add(new HWDevice(testdata[i],HWDevice.ITF_BLUETOOTH));
+            //temp.add(new HWDevice(testdata[i],HWDevice.ITF_BLUETOOTH));
         }
 
         return temp;

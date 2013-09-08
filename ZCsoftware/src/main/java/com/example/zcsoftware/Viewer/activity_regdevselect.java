@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,8 +21,6 @@ import com.example.zcsoftware.R;
 import com.example.zcsoftware.hwInterface.HWDevice;
 import com.example.zcsoftware.hwInterface.HwItfProvided;
 import com.example.zcsoftware.hwInterface.HwItfProvidedImpl;
-import com.example.zcsoftware.hwInterface.HwScanner;
-import com.example.zcsoftware.hwInterface.HwScannerFactory;
 
 import java.util.ArrayList;
 
@@ -70,25 +67,8 @@ public class activity_regdevselect extends Activity {
         }
 
         // we got the requested device type from the intent
-        device_type_from_intent = extras.getInt("hw_type");
+        device_type_from_intent = extras.getInt(activity_LocSearchDevSelect.HWITFSEL_TYPE);
         hwType = device_type_from_intent;
-
-//        Button btn = (Button)findViewById(R.id.btRegItfSel);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // if (iCurStep == HWDevice.ITF_INVALID)
-//                {
-//                   startItfSelect();
-//                    return;
-//                }
-//            }
-//        });
-
-//        if (hwType != HWDevice.ITF_INVALID)
-//        {
-//            loadAvailableDevice();
-//        }
 
         final ListView lvDev = (ListView) findViewById(R.id.lvRegDevList);
         nameList = new ArrayList<HWDevice>();
@@ -99,10 +79,10 @@ public class activity_regdevselect extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 HWDevice dev_name = (HWDevice)lvDev.getItemAtPosition(position);
-                Intent intent = new Intent(activity_regdevselect.this,activity_devinfo.class);
+                Intent intent = new Intent(activity_regdevselect.this,DeviceDetail.class);
 
-                intent.putExtra(activity_devinfo.DEV_NAME,dev_name.toString());
-                intent.putExtra(activity_devinfo.DEV_MAC,dev_name.getStrID());
+                intent.putExtra(DeviceDetail.DEV_NAME,dev_name.toString());
+                intent.putExtra(DeviceDetail.DEV_MAC,dev_name.getMacId());
                 startActivityForResult(intent,STEPREG_DEVSEL);
 
             }
@@ -124,8 +104,8 @@ public class activity_regdevselect extends Activity {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     // Add the name and address to an array adapter to show in a ListView
                     HWDevice temp = new HWDevice();
-                    temp.setStrName(device.getName());
-                    temp.setStrID(device.getAddress());
+                    temp.setDevName(device.getName());
+                    temp.setMacId(device.getAddress());
                     nameList.add(temp);
                     listAdapter.notifyDataSetChanged();
                 }
@@ -140,58 +120,36 @@ public class activity_regdevselect extends Activity {
             Toast.makeText(getApplicationContext(), "No bluetooth detected", 0).show();
             finish();
         }
-        else{
-            if(!mBluetoothAdapter.isEnabled()){
-                turnOnBT();
-            }
 
-            //getPairedDevices();
-            startDiscovery();
-        }
-
-    }
-
-    private void startDiscovery() {
-        // TODO Auto-generated method stub
-        mBluetoothAdapter.cancelDiscovery();
+//        mBluetoothAdapter.disable();
+//        mBluetoothAdapter.enable();
         mBluetoothAdapter.startDiscovery();
+
     }
 
-    private void turnOnBT() {
-        // TODO Auto-generated method stub
-        Intent intent =new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(intent, 1);
-    }
 
-    // add new device into list
-    public void addDevice(HWDevice device)
-    {
-        nameList.add(device);
-        listAdapter.notifyDataSetChanged();
-    }
-
-    // when "select interface is pressed"
-    private void startItfSelect()
-    {
-        //select interface type of device
-        ContentResolver cr = this.getContentResolver();
-        //cr.delete(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,null);
-        Intent intent = new Intent(activity_regdevselect.this,activity_hwInterfaceSelect.class);
-        //intent.putExtra(STEP_KEY,STEPREG_ITF_GET);
-        startActivityForResult(intent,STEPREG_ITF_GET);
-        iCurStep = STEPREG_ITF_GET;
-    }
+//    // when "select interface is pressed"
+//    private void startItfSelect()
+//    {
+//        //select interface type of device
+//        ContentResolver cr = this.getContentResolver();
+//        //cr.delete(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,null);
+//        Intent intent = new Intent(activity_regdevselect.this,activity_hwInterfaceSelect.class);
+//        //intent.putExtra(STEP_KEY,STEPREG_ITF_GET);
+//        startActivityForResult(intent,STEPREG_ITF_GET);
+//        iCurStep = STEPREG_ITF_GET;
+//    }
 
     //return next step
     private void ProcessDevReg(int iStep, Intent val)
     {
         switch(iStep)
         {
-            case STEPREG_INIT:
-            {
-                startItfSelect();
-            }
-                break;
+//            case STEPREG_INIT:
+//            {
+//                startItfSelect();
+//            }
+//            break;
 
 
             case STEPREG_ITF_GET:
@@ -199,12 +157,12 @@ public class activity_regdevselect extends Activity {
                 //list all of device of this type, save info into database after user select
 
                 //init hw itf type
-                hwType = val.getIntExtra(activity_hwInterfaceSelect.HWITFSEL_TYPE,HWDevice.ITF_BLUETOOTH);
+                //hwType = val.getIntExtra(activity_hwInterfaceSelect.HWITFSEL_TYPE,HWDevice.ITF_BLUETOOTH);
 
-                if (hwType == HWDevice.ITF_INVALID)
-                {
-                    return;
-                }
+                //if (hwType == HWDevice.ITF_INVALID)
+                //{
+                    //return;
+                //}
 
                 //loadAvailableDevice();
 
@@ -215,47 +173,58 @@ public class activity_regdevselect extends Activity {
                     provider.Enable(hwType);
                 }
 
-                //Intent discoverableIntent = new
-                //        Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                //discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-                //tartActivityForResult(discoverableIntent,STEPREG_ENABLE_BLUETOOTH_DISCOVERY);
-
-                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                mBluetoothAdapter.startDiscovery();
+                provider.startDiscovery(hwType);
 
             }
                 break;
 
-            case STEPREG_ENABLE_BLUETOOTH_DISCOVERY:
-            {
-                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                mBluetoothAdapter.cancelDiscovery();
-                mBluetoothAdapter.startDiscovery();
-            }
-               break;
 
             case STEPREG_DEVSEL:
                 //back to main activity
                 //get the device information, save data and back to main activity
+            if (null == val)
             {
-                String dev_name = val.getStringExtra(activity_devinfo.DEV_NAME);
-                String dev_mac = val.getStringExtra(activity_devinfo.DEV_MAC);
-                String dev_alias = val.getStringExtra(activity_devinfo.DEV_ALIAS);
-                String dev_desp = val.getStringExtra(activity_devinfo.DEV_DESP);
+                return;
+            }
+            {
+                String dev_name = val.getStringExtra(DeviceDetail.DEV_NAME);
+                String dev_mac = val.getStringExtra(DeviceDetail.DEV_MAC);
+                String dev_alias = val.getStringExtra(DeviceDetail.DEV_ALIAS);
+                String dev_desp = val.getStringExtra(DeviceDetail.DEV_DESP);
+                String dev_imagename = val.getStringExtra(DeviceDetail.DEV_IMGNAME);
+                int dev_lgctype = val.getIntExtra(DeviceDetail.DEV_LGCTYPE,0);
+                int dev_post = val.getIntExtra(DeviceDetail.DEV_POST,0);
+                int dev_lost = val.getIntExtra(DeviceDetail.DEV_LOST,0);
 
                 ContentResolver cr = this.getContentResolver();
 
-                ContentValues values = new ContentValues();
-                values.put(DeviceDBProvider.KEY_NAME,dev_name);
-                values.put(DeviceDBProvider.KEY_MAC,dev_mac);
-                values.put(DeviceDBProvider.KEY_ALIAS,dev_alias);
-                values.put(DeviceDBProvider.KEY_DETAILS,dev_desp);
+                String where = DeviceDBProvider.KEY_ITFTYPE + " = "  + String.valueOf(hwType)  +"  AND "
+                                + DeviceDBProvider.KEY_MAC + " = " +"\"" +  dev_mac +"\"" + " AND " +DeviceDBProvider.KEY_NAME
+                                + " = "  +"\"" + dev_name +"\"";
 
-                cr.insert(DeviceDBProvider.CONTENT_URI,values);
+                if (cr.query(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,where,null,null).getCount() == 0)
+                {
+
+                    ContentValues values = new ContentValues();
+                    values.put(DeviceDBProvider.KEY_NAME,dev_name);
+                    values.put(DeviceDBProvider.KEY_MAC,dev_mac);
+                    values.put(DeviceDBProvider.KEY_ALIAS,dev_alias);
+                    values.put(DeviceDBProvider.KEY_DETAILS,dev_desp);
+                    values.put(DeviceDBProvider.KEY_ITFTYPE,hwType);
+                    values.put(DeviceDBProvider.KEY_IMAGENAME,dev_imagename);
+                    values.put(DeviceDBProvider.KEY_LGCTYPE,dev_lgctype);
+                    values.put(DeviceDBProvider.KEY_POST,dev_post);
+                    values.put(DeviceDBProvider.KEY_LOST,dev_lost);
+
+                    cr.insert(DeviceDBProvider.CONTENT_URI,values);
+                }
+
+
+
 
                 BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 mBluetoothAdapter.cancelDiscovery();
-                this.unregisterReceiver(mReceiver);
+                //this.unregisterReceiver()
                 this.setResult(Activity.RESULT_OK);
                 this.finish();
             }
@@ -284,34 +253,7 @@ public class activity_regdevselect extends Activity {
         unregisterReceiver(mReceiver);
     }
 
-    //
-//    public void loadAvailableDevice()
-//    {
-//        HwScanner scanner = HwScannerFactory.createHwScanner(hwType);
-//        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//
-//        if (mBluetoothAdapter == null) {
-//            // Device does not support Bluetooth
-//        }
-//        if (!mBluetoothAdapter.isEnabled()) {
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-//        }
-//
-//        mBluetoothAdapter.startDiscovery();
-//
-//        if (null == scanner)
-//        {
-//            processReturn(Activity.RESULT_CANCELED);
-//        }
-//
-//        ArrayList<HWDevice> devList = scanner.searchHwDevice();
-//
-//        for (HWDevice dev : devList)
-//        {
-//            addDevice(dev);
-//        }
-//    }
+
 
     public void processReturn(int iRet)
     {

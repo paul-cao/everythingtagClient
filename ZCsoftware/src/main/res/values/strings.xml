@@ -19,4 +19,18 @@
     <string name="itfSelBtn"> OK </string>
     <string name="itfSelZig1">ZigBee</string>
 
+    <string name="album_name">CameraSample</string>
+    <string name="cannot">Cannot</string>
+
+    <string-array name="device_type_array">
+        <item>camera</item>
+        <item>key</item>
+        <item>phone</item>
+        <item>tile</item>
+        <item>earphone</item>
+        <item>car</item>
+        <item>trackr</item>
+        <item>keyboard</item>
+        <item>unknown</item>
+    </string-array>
 </resources>

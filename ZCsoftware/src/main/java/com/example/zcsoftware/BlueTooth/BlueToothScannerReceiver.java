@@ -36,8 +36,8 @@ public class BlueToothScannerReceiver extends BroadcastReceiver {
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             // Add the name and address to an array adapter to show in a ListView
             HWDevice temp = new HWDevice();
-            temp.setStrName(device.getName());
-            temp.setStrID(device.getAddress());
+            temp.setDevName(device.getName());
+            temp.setMacId(device.getAddress());
             data.add(temp);
             lvItems.notifyDataSetChanged();
         }

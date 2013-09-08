@@ -9,6 +9,12 @@ import android.webkit.WebViewClient;
 
 import com.example.zcsoftware.R;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 /**
  * Created by Taotao on 9/3/13.
  */

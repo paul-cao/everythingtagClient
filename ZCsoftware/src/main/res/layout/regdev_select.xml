@@ -9,8 +9,9 @@
         android:text="The Bluetooth devices nearby:"
         android:layout_width="match_parent"
         android:layout_height="30dip"
+        android:gravity="center"
         android:textSize="20dip"
-        android:layout_margin="5dip"/>
+        android:layout_margin="15dip"/>
 
     <!--<AutoCompleteTextView-->
             <!--android:layout_width="fill_parent"-->

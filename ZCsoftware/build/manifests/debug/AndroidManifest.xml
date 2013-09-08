@@ -2,8 +2,8 @@
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16"/>
 
-    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:theme="@style/AppTheme">
-        <activity android:label="@string/app_name" android:name="com.example.zcsoftware.Viewer.MainActivity">
+    <application android:allowBackup="true"  >
+        <activity  android:name="com.example.zcsoftware.Viewer.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

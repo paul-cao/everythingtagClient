@@ -10,5 +10,6 @@ public interface HwItfProvided {
     boolean isHwItfEnable(int type);
     boolean isHwItfOpen(int type);
     void Enable(int type);
+    public void startDiscovery(int type);
 
 }

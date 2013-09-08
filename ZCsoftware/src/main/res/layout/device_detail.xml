@@ -1,0 +1,166 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
+ <ScrollView android:layout_width="match_parent"
+     android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:orientation="vertical">
+
+        <!--no id for it-->
+        <!--<TextView-->
+            <!--android:text="Device name:"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:phoneNumber="false"-->
+            <!--android:textColor="#9d9f9d" />-->
+
+        <TextView
+            android:layout_width="wrap_content" android:id="@+id/deviceDetail_name_tv"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="arthur's mbp"
+            android:layout_marginBottom="10dip"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+         >
+            <!--no id for it-->
+            <TextView
+                android:text="Device MAC Address: "
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#9d9f9d" />
+            <TextView
+                android:layout_width="wrap_content" android:id="@+id/deviveDetail_mac_tv"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="00-00-00-00-00-00"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="10dip"
+                android:layout_gravity="left" />
+            <!--no id for it-->
+            <TextView
+                android:text="Device kind:"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:textColor="#9d9f9d" />
+            <TextView
+                android:layout_width="wrap_content" android:id="@+id/deviveDetail_kind_tv"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=" computer"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="10dip"
+                android:layout_gravity="left" />
+        </LinearLayout> <!-- a vertical one -->
+         <LinearLayout
+             android:orientation="horizontal"
+             android:layout_height="match_parent"
+             android:layout_width="match_parent"
+             android:padding="10dip"
+             android:layout_weight="1"
+             >
+             <ImageView
+                  android:id="@+id/imageView1"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 android:background="@drawable/type4"
+                 android:layout_gravity="right|center_vertical" />
+         </LinearLayout> <!-- a single item one -->
+    </LinearLayout> <!-- a horizontal one -->
+
+
+
+
+     <LinearLayout
+         android:orientation="horizontal"
+         android:layout_height="wrap_content"
+         android:layout_width="match_parent"
+         >
+        <Button
+            android:text="take a picture" android:id="@+id/deviceDetail_takePic_btn"
+            android:layout_marginTop="10dip"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1" />
+         <Button
+             android:text="pick a picture" android:id="@+id/deviceDetail_pickPic_btn"
+             android:layout_marginTop="10dip"
+             android:layout_height="wrap_content"
+             android:layout_width="0dp"
+             android:layout_weight="1" />
+     </LinearLayout>
+
+
+
+
+        <!--no id for it-->
+        <TextView
+            android:text="Device alias"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_width="match_parent" android:id="@+id/deviveDetail_alias_et"
+            android:layout_height="wrap_content"
+            />
+
+        <!--no id for it-->
+        <TextView
+            android:text="Device description"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_width="match_parent" android:id="@+id/deviveDetail_description_et"
+            android:layout_height="wrap_content"
+            android:focusable="false"/>
+
+        <TextView
+            android:text="Device type"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:layout_width="fill_parent" android:id="@+id/deviceDetail_type_spinner"
+            android:layout_height="wrap_content"
+            />
+
+        <CheckBox
+            android:text=" it is missing, help me find it." android:id="@+id/deviveDetail_islost_flag"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:text="finish" android:id="@+id/deviveDetail_save_btn"
+            android:layout_margin="20dip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

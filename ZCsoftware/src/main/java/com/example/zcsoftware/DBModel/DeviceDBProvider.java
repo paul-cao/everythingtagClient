@@ -24,34 +24,90 @@ public class DeviceDBProvider extends ContentProvider {
     private static final String DATABASE_NAME = "ZCSoftwareProvider.db";
     public static final int DATABASE_VERSION = 1;
     public static final String DEVICE_TABLE = "devices";
+
+
+
+
     // Column Names
     public static final String KEY_ID = "_id";
-    public static final String KEY_NAME = "Name";
-    public static final String KEY_DETAILS = "Details";
-    public static final String KEY_ALIAS = "Alias";
     public static final String KEY_MAC = "MacAddress";
-    public static final String KEY_TYPE = "ItfType";
-    public static final String KEY_IDENTIFY = "Identify";
+    public static final String KEY_NAME = "Name";
+    public static final String KEY_ALIAS = "Alias";
+    public static final String KEY_IMAGENAME = "ImageName";
+    public static final String KEY_DETAILS = "Details";
+    public static final String KEY_LGCTYPE = "LgcType";
+    public static final String KEY_LOCLAN = "Latitude";
+    public static final String KEY_LOCLONG = "Longitude";
+    public static final String KEY_ITFTYPE = "ItfType";
+    public static final String KEY_POST = "Post";
+    public static final String KEY_LOST = "Lost";
+    public static final String KEY_REVINT1 = "RevInt1";
+    public static final String KEY_REVINT2 = "RevInt2";
+    public static final String KEY_REVINT3 = "RevInt3";
+    public static final String KEY_REVINT4 = "RevInt4";
+    public static final String KEY_REVINT5 = "RevInt5";
+    public static final String KEY_REVSTR1 = "RevStr1";
+    public static final String KEY_REVSTR2 = "RevStr2";
+    public static final String KEY_REVSTR3 = "RevStr3";
+    public static final String KEY_REVSTR4 = "RevStr4";
+    public static final String KEY_REVSTR5 = "RevStr5";
+
+
     // Column indexes
     public static final int ID_COLUMN = 0;
-    public static final int NAME_COLUMN = 1;
-    public static final int DETAILS_COLUMN = 2;
+    public static final int MAC_COLUMN = 1;
+    public static final int NAME_COLUMN = 2;
     public static final int ALIAS_COLUMN = 3;
-    public static final int MAC_COLUMN = 4;
-    public static final int TYPE_COLUMN = 5;
-    public static final int IDENTIFY_COLUMN = 6;
+    public static final int IMAGENAME_COLUMN = 4;
+    public static final int DETAILS_COLUMN = 5;
+    public static final int LGCTYPE_COLUMN = 6;
+    public static final int LOCLAN_COLUMN = 7;
+    public static final int LOCLONG_COLUMN = 8;
+    public static final int ITFTYPE_COLUMN = 9;
+    public static final int POST_COLUMN = 10;
+    public static final int LOST_COLUMN = 11;
+
+    public static final int REVINT1_COLUMN = 12;
+    public static final int REVINT2_COLUMN = 13;
+    public static final int REVINT3_COLUMN = 14;
+    public static final int REVINT4_COLUMN = 15;
+    public static final int REVINT5_COLUMN = 16;
+
+    public static final int REVSTR1_COLUMN = 17;
+    public static final int REVSTR2_COLUMN = 18;
+    public static final int REVSTR3_COLUMN = 19;
+    public static final int REVSTR4_COLUMN = 20;
+    public static final int REVSTR5_COLUMN = 21;
+
 
 
 
     public static final String DATABASE_CREATE =
             "create table " + DEVICE_TABLE + " ("
                     + KEY_ID + " integer primary key autoincrement, "
-                    + KEY_NAME + " TEXT, "
-                    + KEY_DETAILS + " TEXT, "
-                    + KEY_ALIAS + " TEXT, "
                     + KEY_MAC + " TEXT, "
-                    + KEY_TYPE + " integer, "
-                    + KEY_IDENTIFY + " TEXT);";
+                    + KEY_NAME + " TEXT, "
+                    + KEY_ALIAS + " TEXT, "
+                    + KEY_IMAGENAME + " TEXT, "
+                    + KEY_DETAILS + " TEXT, "
+                    + KEY_LGCTYPE + " integer, "
+                    + KEY_LOCLAN + " double, "
+                    + KEY_LOCLONG + " double, "
+                    + KEY_ITFTYPE + " integer, "
+                    + KEY_POST + " integer, "
+                    + KEY_LOST + " integer, "
+                    + KEY_REVINT1 + " integer, "
+                    + KEY_REVINT2 + " integer, "
+                    + KEY_REVINT3 + " integer, "
+                    + KEY_REVINT4 + " integer, "
+                    + KEY_REVINT5 + " integer, "
+                    + KEY_REVSTR1 + " TEXT, "
+                    + KEY_REVSTR2 + " TEXT, "
+                    + KEY_REVSTR3 + " TEXT, "
+                    + KEY_REVSTR4 + " TEXT, "
+                    + KEY_REVSTR5 + " TEXT);";
+
+
 
 
     private static final int DEVICES = 1;
@@ -111,6 +167,14 @@ public class DeviceDBProvider extends ContentProvider {
         } else {
             orderBy = sortOrder;
         }
+
+        Cursor c1 = qb.query(deviceDB,
+                projection,
+                null, selectionArgs,
+                null, null,
+                orderBy);
+
+        int k1 = c1.getCount();
 
         // Apply the query to the underlying database.
         Cursor c = qb.query(deviceDB,

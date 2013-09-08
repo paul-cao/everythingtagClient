@@ -35,11 +35,15 @@ public class activity_hwInterfaceSelect extends Activity {
             return HWDevice.ITF_BLUETOOTH_LOW_ENERGY;
         }
 
+
+
         //final RadioButton rtZig = (RadioButton)findViewById(R.id.hwitfsel_zig);
         //if (rtZig.isChecked())
         {
           //  return HWDevice.ITF_ZIGBEE;
         }
+
+
 
         final RadioButton rthal = (RadioButton)findViewById(R.id.hwitf_sel_halo);
         if (rthal.isChecked())
@@ -53,7 +57,6 @@ public class activity_hwInterfaceSelect extends Activity {
     }
 
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hwinf_select);
 
@@ -65,16 +68,20 @@ public class activity_hwInterfaceSelect extends Activity {
         final RadioButton rtBle = (RadioButton)findViewById(R.id.hwitfsel_ble);
         rtBle.setEnabled(hwProvider.isHwItfEnable(HWDevice.ITF_BLUETOOTH_LOW_ENERGY));
 
+
         //final RadioButton rtZig = (RadioButton)findViewById(R.id.hwitfsel_zig);
         //rtZig.setEnabled(hwProvider.isHwItfEnable(HWDevice.ITF_ZIGBEE));
 
+
         final RadioButton rthal = (RadioButton)findViewById(R.id.hwitf_sel_halo);
         rthal.setEnabled(hwProvider.isHwItfEnable(HWDevice.ITF_PHONE_HALO));
+
 
         final RadioButton rtWifi = (RadioButton)findViewById(R.id.hwitf_sel_wifi);
         rtWifi.setEnabled(hwProvider.isHwItfEnable(HWDevice.ITF_WIFI));
 
         Button btnSel = (Button)findViewById(R.id.hwitfsel_btSure);
+
 
         btnSel.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -42,17 +43,13 @@ public class LocalDevList extends Activity {
         registerClickCallback(); /** register click effects */
     }
 
+
     private void poputateLocDevList() {
-
-        /** hard code for testing */
-        //locDevList.add(new HWDevice(R.drawable.type1, "Bike",1,"001060AA36F8","San Jose"));
-        //locDevList.add(new HWDevice(R.drawable.type2, "Keyboard",2,"129879127912","San Jose"));
-        //locDevList.add(new HWDevice(R.drawable.type3, "trackr",3,"21HOI1390123","San Francisco"));
-        //locDevList.add(new HWDevice(R.drawable.type3, "trackr",3,"18IU908UIU90","Nanchang"));
-        //locDevList.add(new HWDevice(R.drawable.type2, "keyboard",2,"I1829IHUH801","Shenyang"));
-
         /** database part */
         ContentResolver cr = getContentResolver();
+
+        locDevList.clear();
+
         Cursor c = cr.query(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,null,null,null);
 
         if (null == c)
@@ -64,10 +61,8 @@ public class LocalDevList extends Activity {
         {
             do
             {
-                HWDevice temp = new HWDevice(R.drawable.bt, "Bike",1,"001060AA36F8","San Jose");
-                temp.setStrName(c.getString(DeviceDBProvider.NAME_COLUMN));
-                temp.setType(c.getInt(DeviceDBProvider.TYPE_COLUMN));
-                temp.setStrID(c.getString(DeviceDBProvider.IDENTIFY_COLUMN));
+                HWDevice temp = new HWDevice();
+                temp.buildHwDeviceByCursor(c);
                 //items.add(temp);
                 if(!locDevList.contains(temp)){
                     locDevList.add(0,temp);
@@ -104,19 +99,20 @@ public class LocalDevList extends Activity {
 
             // Fill the image by type
             ImageView imageView = (ImageView)itemView.findViewById(R.id.item_icon);
-            imageView.setImageResource(currentLocDev.getImgID());
+            //imageView.setImageResource(currentLocDev.getImgID());
+            imageView.setImageBitmap(BitmapFactory.decodeFile(currentLocDev.getImageName()));
             //imageView.setClickable(true);
             imageView.setFocusable(false);
 
             // local device name:
             TextView nameText = (TextView) itemView.findViewById(R.id.item_dev_alias);
-            nameText.setText(currentLocDev.getStrName());
+            nameText.setText(currentLocDev.getDevName());
 
             nameText.setFocusable(false);
 
             // local device city:
             TextView cityText = (TextView) itemView.findViewById(R.id.item_dev_position);
-            cityText.setText(currentLocDev.getCity());
+            //cityText.setText(currentLocDev.getCity());
 
             cityText.setFocusable(false);
 
@@ -128,8 +124,8 @@ public class LocalDevList extends Activity {
                     //Toast.makeText(LocalDevList.this, message, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(LocalDevList.this,SearchDevice.class);
 
-                    intent.putExtra("DeviceName",currentLocDev.getStrName());
-                    intent.putExtra("Mac",currentLocDev.getStrID());
+                    intent.putExtra(SearchDevice.DEV_NAME,currentLocDev.getDevName());
+                    intent.putExtra(SearchDevice.DEV_MAC,currentLocDev.getMacId());
 
                     startActivity(intent);
 
@@ -154,8 +150,8 @@ public class LocalDevList extends Activity {
 
                 Intent intent = new Intent(LocalDevList.this,SearchDevice.class);
 
-                intent.putExtra("DeviceName",clickedDev.getStrName());
-                intent.putExtra("Mac",clickedDev.getStrID());
+                intent.putExtra("DeviceName",clickedDev.getDevName());
+                intent.putExtra("Mac",clickedDev.getMacId());
 
                 startActivity(intent);
 
@@ -186,8 +182,8 @@ public class LocalDevList extends Activity {
     @Override
     public void onResume(){
         super.onResume();
-        //poputateLocDevList(); /** initialize instances */
-        //populateListView(); /** generate list view */
+        poputateLocDevList(); /** initialize instances */
+        populateListView(); /** generate list view */
         //registerClickCallback(); /** register click effects */
     }
 

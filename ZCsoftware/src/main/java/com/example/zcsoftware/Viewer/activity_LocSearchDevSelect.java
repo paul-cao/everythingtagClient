@@ -56,27 +56,6 @@ public class activity_LocSearchDevSelect extends Activity {
         ph_btn = (Button)findViewById(R.id.addnew_ph_btn);
         test_btn = (Button)findViewById(R.id.addnew_test_btn);
 
-//        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                HWDevice temp = (HWDevice)lvItems.getItemAtPosition(position);
-//                Intent intent = new Intent(activity_LocSearchDevSelect.this,activity_devinfo.class);
-//                String devname = temp.getStrName();
-//                intent.putExtra(activity_devinfo.DEV_NAME,devname);
-//                startActivityForResult(intent,STEPLOC_DEV_GET);
-//
-//                //start local search service
-//            }
-//        });
-
-//        Button btReg = (Button)findViewById(R.id.btRegDev);
-//        btReg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(activity_LocSearchDevSelect.this,activity_regdevselect.class);
-//                startActivityForResult(intent,STEPLOC_DEVREG);
-//            }
-//        });
 
         /**
          *      when "Search for Bluetooth device is pressed"
@@ -97,92 +76,15 @@ public class activity_LocSearchDevSelect extends Activity {
         test_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity_LocSearchDevSelect.this, Test_signalView.class);
+                Intent intent = new Intent(activity_LocSearchDevSelect.this, DeviceDetail.class);
                 //intent.putExtra(HWITFSEL_TYPE, HWDevice.ITF_BLUETOOTH);
                 //setResult(Activity.RESULT_OK,intent);
                 startActivity(intent);
             }
         });
 
-        //loadHwDeviceFromDatabase();
+
 
     }
-
-
-//    public void loadHwDeviceFromDatabase()
-//    {
-//        ContentResolver cr = getContentResolver();
-//        Cursor c = cr.query(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,null,null,null);
-//
-//        if (null == c)
-//        {
-//            return;
-//        }
-//
-//        if (c.moveToFirst())
-//        {
-//            do
-//            {
-//                HWDevice temp = new HWDevice();
-//                temp.setStrName(c.getString(DeviceDBProvider.NAME_COLUMN));
-//                temp.setType(c.getInt(DeviceDBProvider.TYPE_COLUMN));
-//                temp.setStrID(c.getString(DeviceDBProvider.IDENTIFY_COLUMN));
-//                items.add(temp);
-//            }
-//            while(c.moveToNext());
-//        }
-//
-//        adpter.notifyDataSetChanged();
-//
-//
-//    }
-
-//    public void AddHwDeviceIntoList(HWDevice device)
-//    {
-//        items.add(device);
-//        adpter.notifyDataSetChanged();
-//    }
-//
-//    @Override
-//    public void onActivityResult(int reqCode, int resCode, Intent data)
-//    {
-//        ProcessDevReg(reqCode,data);
-//    }
-//
-//
-//    //return next step
-//    private void ProcessDevReg(int iStep, Intent val)
-//    {
-//        switch(iStep)
-//        {
-//            case STEPLOC_DEVREG:
-//            {
-//                //Reg new device, reload device list
-//                loadHwDeviceFromDatabase();
-//            }
-//            break;
-//
-//
-//            case STEPLOC_DEV_GET:
-//            {
-//                //list all of device of this type, save info into database after user select
-//
-//            }
-//            break;
-//
-//
-//            case STEP_DEV_SEARCH:
-//                //back to main activity
-//                //get the device information, save data and back to main activity
-//            {
-//
-//            }
-//
-//            break;
-//        }
-//        return ;
-//
-//    }
-
 
 }

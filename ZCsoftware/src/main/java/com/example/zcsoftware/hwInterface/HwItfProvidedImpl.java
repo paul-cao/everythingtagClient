@@ -40,4 +40,13 @@ public class HwItfProvidedImpl implements HwItfProvided{
             mBluetoothAdapter.enable();
         }
     }
+
+    public void startDiscovery(int type)
+    {
+        if (type == HWDevice.ITF_BLUETOOTH)
+        {
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            mBluetoothAdapter.startDiscovery();
+        }
+    }
 }

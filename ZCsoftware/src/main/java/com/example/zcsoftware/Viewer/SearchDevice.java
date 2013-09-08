@@ -19,6 +19,9 @@ import android.widget.TextView;
 import com.example.zcsoftware.R;
 import com.example.zcsoftware.hwInterface.HWDevice;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by Taotao on 8/14/13.
  */
@@ -32,9 +35,54 @@ public class SearchDevice extends Activity implements Runnable{
 
     BroadcastReceiver mReceiver;
     BroadcastReceiver mReceiver2;
+    List<Float> lstRssi = new LinkedList<Float>();
+
+    public static final String DEV_NAME = "DeviceName";
+    public static final String DEV_MAC = "DeviceMac";
+    public static final String DEV_IMAGENAME = "DeviceImage";
+
 
     //Thread thread;
     //BluetoothAdapter mBluetoothAdapter;
+
+    private float calculateFinalRssi(float newVal)
+    {
+        float fv = 0.0f;
+        if (lstRssi.size() == 0)
+        {
+            lstRssi.add(newVal);
+            return newVal;
+        }
+        else if (lstRssi.size() + 1 < 3)
+        {
+            fv = lstRssi.get(0) * 0.5f + newVal * 0.5f;
+            lstRssi.add(fv);
+            return fv;
+        }
+        else if (lstRssi.size() + 1 == 3)
+        {
+            fv = lstRssi.get(0) * 0.3f + lstRssi.get(1) * 0.4f + newVal * 0.3f;
+            lstRssi.add(fv);
+            return fv;
+        }
+        else
+        {
+            fv = lstRssi.get(1) * 0.3f + lstRssi.get(2) * 0.4f + newVal * 0.3f;
+            lstRssi.remove(0);
+            lstRssi.add(fv);
+            return fv;
+        }
+
+       // return fv;
+
+    }
+
+
+    //return cm
+    private float calculateDistance(float rssiVal)
+    {
+        return 100 * (rssiVal / -55);
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +90,9 @@ public class SearchDevice extends Activity implements Runnable{
 
         Intent data = this.getIntent();
 
-        final String name = data.getStringExtra("DeviceName");
+        final String name = data.getStringExtra(SearchDevice.DEV_NAME);
+        final String macInfo = data.getStringExtra(SearchDevice.DEV_MAC);
+
         TextView tvName = (TextView)findViewById(R.id.tvSearchName);
         distance_tv = (TextView)findViewById(R.id.tvSearchDistanceValue);
 
@@ -78,34 +128,38 @@ public class SearchDevice extends Activity implements Runnable{
                     // Get the BluetoothDevice object from the Intent
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                    if (device.getName()!=null && device.getName().equals(name))
+                    if (device.getAddress()!=null && device.getAddress().equals(macInfo))
                     {
-                        if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+                        if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
 
                             //信号强度。
                             short rssi = intent.getExtras().getShort(
                                     BluetoothDevice.EXTRA_RSSI);
+
+                            float newRssi = calculateFinalRssi(rssi);
+                            float dis = calculateDistance(newRssi);
+
                             tvRSSI.setText(String.valueOf(rssi));
 
                             /**
                              * Graphic Part
                              */
-                            if(rssi< -70){
+                            if(newRssi< -80){
                                 imagesToShow[0]=R.drawable.signal_dot_1;
                                 signal_ndot_iv.setImageResource(R.drawable.signal_1);
-                                distance_tv.setText("very far");
-                            } else if( rssi< -55 ){
+                                distance_tv.setText(dis+" cm");
+                            } else if( newRssi< -70 ){
                                 imagesToShow[0]=R.drawable.signal_dot_2;
                                 signal_ndot_iv.setImageResource(R.drawable.signal_2);
-                                distance_tv.setText("far");
-                            } else if( rssi< -44 ){
+                                distance_tv.setText(dis+" cm");
+                            } else if( newRssi< -60 ){
                                 imagesToShow[0]=R.drawable.signal_dot_3;
                                 signal_ndot_iv.setImageResource(R.drawable.signal_3);
-                                distance_tv.setText("near");
-                            } else if( rssi< 0 ){
+                                distance_tv.setText(dis+" cm");
+                            } else if( newRssi< 0 ){
                                 imagesToShow[0]=R.drawable.signal_dot_4;
                                 signal_ndot_iv.setImageResource(R.drawable.signal_4);
-                                distance_tv.setText("face to face");
+                                distance_tv.setText(dis+" cm");
                             }
                             mBluetoothAdapter.cancelDiscovery();
                         }
@@ -141,47 +195,6 @@ public class SearchDevice extends Activity implements Runnable{
 //        startActivityForResult(discoverableIntent,11);
         BluetoothAdapter mBluetoothAdapter1 = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter1.startDiscovery();
-    }
-
-    @Override
-    public void onActivityResult(int reqCode, int resCode, Intent data)
-    {
-       // if (resCode == Activity.RESULT_OK)
-
-        BluetoothAdapter mBluetoothAdapter1 = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter1.disable();
-        mBluetoothAdapter1.enable();
-        {
-            try
-            {
-
-                //Thread.sleep(10000);
-                // BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-                //while(true)
-                {
-                    mBluetoothAdapter1.startDiscovery();
-                    //mBluetoothAdapter1.startDiscovery();
-                    //mBluetoothAdapter1.startDiscovery();
-                    //mBluetoothAdapter1.startDiscovery();
-
-                    try
-                    {
-                        //Thread.sleep(10000);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.printStackTrace();;
-                    }
-                }
-        //thread.start();
-        }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-
     }
 
     /**
@@ -241,6 +254,11 @@ public class SearchDevice extends Activity implements Runnable{
         super.onPause();
         if(mReceiver!=null) unregisterReceiver(mReceiver);
         if(mReceiver2!=null) unregisterReceiver(mReceiver2);
+        BluetoothAdapter mBluetoothAdapter1 = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter1.startDiscovery();
+        mBluetoothAdapter1.disable();
+        mBluetoothAdapter1.enable();
+
     }
 
     @Override

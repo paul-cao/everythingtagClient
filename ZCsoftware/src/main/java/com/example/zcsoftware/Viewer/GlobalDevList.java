@@ -2,6 +2,7 @@ package com.example.zcsoftware.Viewer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -12,9 +13,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import com.example.zcsoftware.R;
 import com.example.zcsoftware.hwInterface.HWDevice;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +32,41 @@ import java.util.List;
  * Created by arthur on 8/2/13.
  */
 public class GlobalDevList extends Activity {
+    private String userName;
+    private String password;
+    private boolean isLoggedIn;
+
+    private Intent loginIntent;
     public static final int VIEW_ID_REG = 0;
     public static final int VIEW_ID_LOC = 1;
     public static final int VIEW_ID_GLO = 2;
     public static final int VIEW_ID_DATA = 3;
+
 
     private List<HWDevice> locDevList = new ArrayList<HWDevice>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState==null){
+            welcome();
+        } else{
+            isLoggedIn = savedInstanceState.getBoolean("isLoggedIn");
+            if(isLoggedIn==true){
+                /**
+                    need to verify the user/password ONLINE
+                    then continue
+                 */
+                userName = savedInstanceState.getString("userName");
+                password = savedInstanceState.getString("password");
+            } else{
+                /**
+                 *
+                 */
+                login();
+            }
+        }
         setContentView(R.layout.device_list_activity);
         poputateLocDevList(); /** initialize instances */
         populateListView(); /** generate list view */
@@ -46,10 +80,53 @@ public class GlobalDevList extends Activity {
         //locDevList.add(new HWDevice(R.drawable.type3, "trackr",3,"18IU908UIU90","Nanchang, China"));
         //locDevList.add(new HWDevice(R.drawable.type2, "keyboard",2,"I1829IHUH801","Shenyang, China"));
         //locDevList.add(new HWDevice(R.drawable.type2, "Keyboard",2,"129879127912","San Jose, CA USA"));
-        locDevList.add(new HWDevice(R.drawable.type1, "Bike",1,"001060AA36F8","San Jose, CA USA"));
-        locDevList.add(new HWDevice(R.drawable.type5, "earphone",5,"I1829IHUH801","Beijing, China"));
-        locDevList.add(new HWDevice(R.drawable.type3, "trackr",3,"21HOI1390123","San Francisco, CA USA"));
-        locDevList.add(new HWDevice(R.drawable.type4, "tile",4,"129879127912","Cupertino, CA USA"));
+        //locDevList.add(new HWDevice(R.drawable.type1, "Bike",1,"001060AA36F8","San Jose, CA USA",HWDevice.ITF_BLUETOOTH));
+        //locDevList.add(new HWDevice(R.drawable.type5, "earphone",5,"I1829IHUH801","Beijing, China",HWDevice.ITF_BLUETOOTH));
+        //locDevList.add(new HWDevice(R.drawable.type3, "trackr",3,"21HOI1390123","San Francisco, CA USA",HWDevice.ITF_BLUETOOTH));
+        //locDevList.add(new HWDevice(R.drawable.type4, "tile",4,"129879127912","Cupertino, CA USA",HWDevice.ITF_BLUETOOTH));
+
+    }
+    /**
+     *  Direct the user to login or sign up
+     */
+    private void welcome(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+         builder.setTitle("Everything Tag Server:")
+                .setMessage("Please login to continue.")
+                .setCancelable(false)
+                .setIcon(R.drawable.ic_launcher)
+                .setPositiveButton("login", new DialogInterface.OnClickListener() {
+                    // guides to login
+                    public void onClick(DialogInterface dialog, int id) {
+                        loginIntent = new Intent(GlobalDevList.this, Login_activity.class);
+                        startActivity(loginIntent);
+                    }
+                })
+                .setNeutralButton("signup", new DialogInterface.OnClickListener() {
+                    // guides to signup
+                    public void onClick(DialogInterface dialog, int id) {
+                        loginIntent = new Intent(GlobalDevList.this, cloudSignup.class);
+                        startActivity(loginIntent);
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // something is wrong
+                        // does not go back to previous act
+                        // instead, it quits entire app
+                        return;
+                    }
+                });
+        builder.create().show();        // create and show the alert dialog
+    }
+
+    /**
+     *  Direct the user to login view activity
+     */
+    private void login(){
+        loginIntent = new Intent(GlobalDevList.this, Login_activity.class);
+        startActivity(loginIntent);
     }
 
     private void populateListView() {
@@ -72,29 +149,69 @@ public class GlobalDevList extends Activity {
             }
 
             // Find the car to work with.
-            HWDevice currentLocDev = locDevList.get(position);
+            final HWDevice currentLocDev = locDevList.get(position);
 
             // Fill the image by type
             ImageView imageView = (ImageView)itemView.findViewById(R.id.item_icon);
-            imageView.setImageResource(currentLocDev.getImgID());
+            //imageView.setImageResource(currentLocDev.getImgID());
 
             // local device name:
             TextView nameText = (TextView) itemView.findViewById(R.id.item_dev_alias);
-            nameText.setText(currentLocDev.getStrName());
+            nameText.setText(currentLocDev.getDevName());
 
             // local device city:
             TextView cityText = (TextView) itemView.findViewById(R.id.item_dev_position);
-            cityText.setText(currentLocDev.getCity());
+            //cityText.setText(currentLocDev.getImageName());
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                     class DownloadImageTask extends AsyncTask<String,String,String> {
+
+
+                         @Override
+                         protected String doInBackground(String... strings) {
+
+                             HttpPost httpRequest = new HttpPost(strings[0]);
+                             HttpClient httpclient = new DefaultHttpClient();
+                             HttpResponse httpResponse = null;
+                             try
+                             {
+                                 httpResponse = httpclient.execute(httpRequest);
+                                 if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                                     //SEND SUCCESS
+                                     int k = 0;
+                                 }
+                                 else
+                                 {
+                                     //send error
+                                     int k = 1;
+                                 }
+                             }
+                             catch(Exception ex)
+                             {
+                                 ex.printStackTrace();
+                             }
+
+                             return "";
+                         }
+                     }
                     //String message = "You clicked position " + "null"
                     //        + " Which is hw called " + currentLocDev.getStrName();
                     //Toast.makeText(LocalDevList.this, message, Toast.LENGTH_LONG).show();
+                    String urlInfo = "https://gglasspuppy.appspot.com/scanner/?";
+                    urlInfo += "devtype=" + currentLocDev.getHwItfType();
+                    urlInfo += "&" + "macinfo=" + currentLocDev.getMacId();
+                    urlInfo += "&" + "username=" + "abc";
+                    urlInfo += "&" + "pass=" + "a";
+
+                    new DownloadImageTask().execute(urlInfo);
+
+
+
                     Intent intent = new Intent(GlobalDevList.this,cloudSignup.class);
 
-                    intent.putExtra("URL","gglasspuppy.appspot.com/register/index");
+                    intent.putExtra("URL","https://gglasspuppy.appspot.com/register/index");
                     //intent.putExtra("URL","www.google.com");
                     //intent.putExtra("Mac",currentLocDev.getStrID());
 
@@ -115,10 +232,11 @@ public class GlobalDevList extends Activity {
                 HWDevice clickedDev = locDevList.get(position);
 
                 String message = "You clicked position " + position
-                + " Which is hw called " + clickedDev.getStrName();
+                + " Which is hw called " + clickedDev.getDevName();
                 Toast.makeText(GlobalDevList.this, message, Toast.LENGTH_LONG).show();
             }
         });
+
     }
 
     @Override
