@@ -71,6 +71,7 @@ public class LocalDevList extends Activity {
             while(c.moveToNext());
         }
         //adpter.notifyDataSetChanged();
+        c.close();
     }
 
     private void populateListView() {
@@ -124,8 +125,16 @@ public class LocalDevList extends Activity {
                     //Toast.makeText(LocalDevList.this, message, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(LocalDevList.this,SearchDevice.class);
 
-                    intent.putExtra(SearchDevice.DEV_NAME,currentLocDev.getDevName());
+                    if ((null != currentLocDev.getAliasName()) && (0 < currentLocDev.getAliasName().length()))
+                    {
+                        intent.putExtra(SearchDevice.DEV_NAME,currentLocDev.getAliasName());
+                    }
+                    else
+                    {
+                        intent.putExtra(SearchDevice.DEV_NAME,currentLocDev.getDevName());
+                    }
                     intent.putExtra(SearchDevice.DEV_MAC,currentLocDev.getMacId());
+                    intent.putExtra(SearchDevice.DEV_IMAGENAME,currentLocDev.getImageName());
 
                     startActivity(intent);
 
@@ -157,26 +166,6 @@ public class LocalDevList extends Activity {
 
             }
         });
-/*
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View viewClicked,
-                                    int position, long id) {
-
-                HWDevice clickedDev = locDevList.get(position);
-                String message = "You clicked position " + position
-                        + " Which is hw called " + clickedDev.getStrName();
-                Toast.makeText(LocalDevList.this, message, Toast.LENGTH_LONG).show();
-
-                Intent intent = new Intent(LocalDevList.this,SearchDevice.class);
-
-                intent.putExtra("DeviceName",clickedDev.getStrName());
-                intent.putExtra("Mac",clickedDev.getStrID());
-
-                startActivity(intent);
-            }
-        });
-*/
     }
 
     @Override

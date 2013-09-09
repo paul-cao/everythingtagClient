@@ -49,4 +49,14 @@ public class HwItfProvidedImpl implements HwItfProvided{
             mBluetoothAdapter.startDiscovery();
         }
     }
+
+    public void cancelDiscovery(int type)
+    {
+        if (type == HWDevice.ITF_BLUETOOTH)
+        {
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            mBluetoothAdapter.cancelDiscovery();
+        }
+
+    }
 }

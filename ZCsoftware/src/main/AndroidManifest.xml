@@ -34,7 +34,9 @@
         <activity android:name=".Viewer.DeviceDetail" />
 
         <provider android:name="com.example.zcsoftware.DBModel.DeviceDBProvider"
-                  android:authorities="com.example.zcsoftware.DBModel" />
+                  android:authorities="com.example.zcsoftware.deviceprovider" />
+        <service android:name=".CloudService.EverythingTagCloudService"/>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -42,5 +44,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

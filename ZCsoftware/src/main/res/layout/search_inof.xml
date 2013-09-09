@@ -4,32 +4,35 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-    android:clickable="true"
-    android:background="#ffffff"
-    android:baselineAligned="true">
+              android:clickable="true"
+              android:paddingTop="0dip"
+                android:paddingLeft="30dip"
+                android:paddingRight="30dip"
+              android:background="#ffffff"
+              android:baselineAligned="true">
 
     <!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android">-->
         <!--<item android:drawable="@drawable/t" />-->
         <!--<item android:drawable="@drawable/tt" />-->
     <!--</layer-list>-->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <ImageView
+            android:layout_width="250dip"
+            android:layout_height="180dip"
+            android:background="@drawable/signal_ndot_mask" android:id="@+id/imageView"
+            android:layout_gravity="center"
+            android:layout_marginBottom="0dip"/>
 
-    <ImageView
-        android:layout_width="220dp"
-        android:layout_height="146dp"
-        android:id="@+id/imageView"
-        android:layout_gravity="center"
-        android:background="@drawable/signal_ndot_mask"
-        android:layout_marginTop="20dip"
-        android:layout_marginBottom="0dip"/>
-
-    <ImageView
-        android:layout_width="220dp"
-        android:layout_height="74dp"
-        android:id="@+id/signal_dot"
-        android:background="@drawable/signal_dot2"
-        android:layout_gravity="center"
-        />
-
+        <ImageView
+            android:layout_gravity="center" android:id="@+id/signal_dot"
+            android:layout_width="300dp"
+            android:layout_height="80dp"
+            android:src="@drawable/signal_dot2"
+            />
+    </LinearLayout>
     <!--<TextView-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
@@ -37,41 +40,89 @@
             <!--android:id="@+id/tvSearchNameVal"-->
             <!--android:layout_gravity="left|center_vertical"/>-->
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/tvSearchName"
-            android:layout_gravity="center"
-            android:textSize="20dip"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="15dip"
+        android:background="#e8e9e4">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_weight="1.2"
+            android:layout_gravity="left"
+            >
+            <ImageView
+                android:id="@+id/imageview1"
+                android:src="@drawable/nopic"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                />
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:id="@+id/tvSearchRSSI"
-            android:layout_gravity="left|center_vertical"/>
+        </LinearLayout> <!--lower part . left -->
 
-    <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:text="RSSI value unknown"
-            android:id="@+id/tvSearchRSSIValue"
-            android:layout_gravity="center"
-            android:textSize="18dip"/>
+            android:layout_width="match_parent"
+            android:paddingLeft="12dip"
+            android:layout_weight="1.5"
+            >
+            <!--<TextView-->
+                <!--android:text="Device Detail:" android:id="@+id/tvSearchRSSI"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="left|center_vertical"/>-->
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:id="@+id/tvSearchDistance"
-            android:layout_gravity="left|center_vertical"/>
+            <TextView
+                android:text="Device Name" android:id="@+id/tvSearchName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" Searching..."
-            android:id="@+id/tvSearchDistanceValue"
-            android:layout_gravity="center"
-            android:textSize="20dip"/>
+
+            <TextView
+                android:text="Mac Address:"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <TextView
+                android:text="00-00-00-00" android:id="@+id/mac_tv"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"/>
+
+            <TextView
+                android:text="RSSI value" android:id="@+id/tvSearchRSSIValue"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout> <!--lower part . right -->
+    </LinearLayout> <!--lower part -->
+
+    <!--<LinearLayout-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:background="#e8e9e4"-->
+        <!--android:padding="10dip"-->
+        <!-->-->
+    <!--<Button-->
+        <!--android:text="change detail" android:id="@+id/search_info_change_btn"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"/>-->
+    <!--<Button-->
+        <!--android:text="remove" android:id="@+id/search_info_change_btn"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+         <!--/>-->
+    <!--</LinearLayout> &lt;!&ndash;button part &ndash;&gt;-->
+
 </LinearLayout>

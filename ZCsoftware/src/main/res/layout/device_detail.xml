@@ -116,7 +116,7 @@
 
         <!--no id for it-->
         <TextView
-            android:text="Device alias"
+            android:text="Nickname"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

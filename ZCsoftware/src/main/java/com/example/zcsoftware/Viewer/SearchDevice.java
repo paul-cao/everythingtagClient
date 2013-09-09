@@ -15,6 +15,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.net.Uri;
 
 import com.example.zcsoftware.R;
 import com.example.zcsoftware.hwInterface.HWDevice;
@@ -31,6 +32,9 @@ public class SearchDevice extends Activity implements Runnable{
     TextView distance_tv;
     private ImageView dot_iv;
     private ImageView signal_ndot_iv;
+    private ImageView devicePic;
+    private TextView deviceMac;
+    private String photoPath;
     int imagesToShow[] = { R.drawable.signal_dot_0 };
 
     BroadcastReceiver mReceiver;
@@ -92,14 +96,23 @@ public class SearchDevice extends Activity implements Runnable{
 
         final String name = data.getStringExtra(SearchDevice.DEV_NAME);
         final String macInfo = data.getStringExtra(SearchDevice.DEV_MAC);
+        photoPath = data.getStringExtra(SearchDevice.DEV_IMAGENAME);
+        if (null != photoPath)
+        {
+            Uri path = Uri.parse(photoPath);
+            devicePic = (ImageView)findViewById(R.id.imageview1);
+            devicePic.setImageURI(path);
+        }
 
         TextView tvName = (TextView)findViewById(R.id.tvSearchName);
-        distance_tv = (TextView)findViewById(R.id.tvSearchDistanceValue);
+        //distance_tv = (TextView)findViewById(R.id.tvSearchDistanceValue);
 
         //signalView = (ImageView)findViewById(R.id.imageView);
 
         // signal none-dot-part image view
         signal_ndot_iv = (ImageView)findViewById(R.id.imageView);
+        TextView mac_tv = (TextView)findViewById(R.id.mac_tv);
+        mac_tv.setText(macInfo);
 
         // dot image view
         dot_iv = (ImageView)findViewById(R.id.signal_dot);
@@ -111,6 +124,9 @@ public class SearchDevice extends Activity implements Runnable{
         final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         final TextView tvRSSI = (TextView)findViewById(R.id.tvSearchRSSIValue);
         tvRSSI.setText("Acquiring RSSI value...");
+
+        MainActivity.VAR_BLUETOOTH_DISCOVERY.close();
+        mBluetoothAdapter.cancelDiscovery();
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
@@ -130,7 +146,8 @@ public class SearchDevice extends Activity implements Runnable{
 
                     if (device.getAddress()!=null && device.getAddress().equals(macInfo))
                     {
-                        if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
+                        if (device.getBondState() != BluetoothDevice.BOND_BONDED)
+                        {
 
                             //信号强度。
                             short rssi = intent.getExtras().getShort(
@@ -147,19 +164,19 @@ public class SearchDevice extends Activity implements Runnable{
                             if(newRssi< -80){
                                 imagesToShow[0]=R.drawable.signal_dot_1;
                                 signal_ndot_iv.setImageResource(R.drawable.signal_1);
-                                distance_tv.setText(dis+" cm");
-                            } else if( newRssi< -70 ){
+                                //distance_tv.setText(dis+" cm");
+                            } else if( newRssi< -60 ){
                                 imagesToShow[0]=R.drawable.signal_dot_2;
                                 signal_ndot_iv.setImageResource(R.drawable.signal_2);
-                                distance_tv.setText(dis+" cm");
-                            } else if( newRssi< -60 ){
+                                //distance_tv.setText(dis+" cm");
+                            } else if( newRssi< -40 ){
                                 imagesToShow[0]=R.drawable.signal_dot_3;
                                 signal_ndot_iv.setImageResource(R.drawable.signal_3);
-                                distance_tv.setText(dis+" cm");
+                                //distance_tv.setText(dis+" cm");
                             } else if( newRssi< 0 ){
                                 imagesToShow[0]=R.drawable.signal_dot_4;
                                 signal_ndot_iv.setImageResource(R.drawable.signal_4);
-                                distance_tv.setText(dis+" cm");
+                                //distance_tv.setText(dis+" cm");
                             }
                             mBluetoothAdapter.cancelDiscovery();
                         }
@@ -186,15 +203,12 @@ public class SearchDevice extends Activity implements Runnable{
             }
         };
         registerReceiver(mReceiver2, filter2);
-        //if (!mBluetoothAdapter.isEnabled())
+        if (!mBluetoothAdapter.isEnabled())
         {
             mBluetoothAdapter.enable();
         }
-//        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,1);
-//        startActivityForResult(discoverableIntent,11);
-        BluetoothAdapter mBluetoothAdapter1 = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter1.startDiscovery();
+
+        mBluetoothAdapter.startDiscovery();
     }
 
     /**
@@ -252,13 +266,49 @@ public class SearchDevice extends Activity implements Runnable{
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        if(mReceiver!=null) unregisterReceiver(mReceiver);
-        if(mReceiver2!=null) unregisterReceiver(mReceiver2);
-        BluetoothAdapter mBluetoothAdapter1 = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothAdapter1.startDiscovery();
-        mBluetoothAdapter1.disable();
-        mBluetoothAdapter1.enable();
+        if(mReceiver!=null)
+        {
+            unregisterReceiver(mReceiver);
+           // mReceiver = null;
+        }
+        if(mReceiver2!=null)
+        {
+            unregisterReceiver(mReceiver2);
+            //mReceiver2 = null;
+        }
 
+
+        BluetoothAdapter mBluetoothAdapter1 = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter1.cancelDiscovery();
+        //mBluetoothAdapter1.disable();
+        //mBluetoothAdapter1.enable();
+
+        MainActivity.VAR_BLUETOOTH_DISCOVERY.open();
+
+    }
+
+    @Override
+    protected  void onResume()
+    {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+
+        if(mReceiver!=null)
+        {
+            unregisterReceiver(mReceiver);
+            //mReceiver = null;
+        }
+        if(mReceiver2!=null)
+        {
+            unregisterReceiver(mReceiver2);
+            //mReceiver2 = null;
+        }
+
+        registerReceiver(mReceiver, filter);
+
+        IntentFilter filter2 = new IntentFilter();
+        filter2.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(mReceiver2, filter2);
     }
 
     @Override

@@ -1,7 +1,11 @@
 package com.example.zcsoftware.Viewer;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,6 +20,7 @@ import android.widget.Toast;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
+import com.example.zcsoftware.DBModel.DeviceDBProvider;
 import com.example.zcsoftware.R;
 import com.example.zcsoftware.hwInterface.HWDevice;
 
@@ -32,15 +37,21 @@ import java.util.List;
  * Created by arthur on 8/2/13.
  */
 public class GlobalDevList extends Activity {
-    private String userName;
-    private String password;
-    private boolean isLoggedIn;
+    private String userName = "";
+    private String password = "";
+    private boolean isLoggedIn = false;
 
     private Intent loginIntent;
     public static final int VIEW_ID_REG = 0;
     public static final int VIEW_ID_LOC = 1;
     public static final int VIEW_ID_GLO = 2;
     public static final int VIEW_ID_DATA = 3;
+	
+	private int LOGIN_REQUEST = 0;
+	
+	// shared preference related
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;// for log out
 
 
     private List<HWDevice> locDevList = new ArrayList<HWDevice>();
@@ -48,24 +59,18 @@ public class GlobalDevList extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // shared preference related
+        pref = getApplicationContext().getSharedPreferences(MainActivity.PREFERENCE_APP_ID, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
 
-        if(savedInstanceState==null){
-            welcome();
-        } else{
-            isLoggedIn = savedInstanceState.getBoolean("isLoggedIn");
-            if(isLoggedIn==true){
-                /**
-                    need to verify the user/password ONLINE
-                    then continue
-                 */
-                userName = savedInstanceState.getString("userName");
-                password = savedInstanceState.getString("password");
-            } else{
-                /**
-                 *
-                 */
-                login();
-            }
+        if (pref.contains(MainActivity.PREFERENCE_APP_USERNAME))
+        {
+            this.userName = pref.getString(MainActivity.PREFERENCE_APP_USERNAME,"");
+        }
+
+        if (pref.contains(MainActivity.PREFERENCE_APP_PASSWORD))
+        {
+            this.password = pref.getString(MainActivity.PREFERENCE_APP_PASSWORD,"");
         }
         setContentView(R.layout.device_list_activity);
         poputateLocDevList(); /** initialize instances */
@@ -77,13 +82,33 @@ public class GlobalDevList extends Activity {
         /**
          *  hard coded dummy items
          */
-        //locDevList.add(new HWDevice(R.drawable.type3, "trackr",3,"18IU908UIU90","Nanchang, China"));
-        //locDevList.add(new HWDevice(R.drawable.type2, "keyboard",2,"I1829IHUH801","Shenyang, China"));
-        //locDevList.add(new HWDevice(R.drawable.type2, "Keyboard",2,"129879127912","San Jose, CA USA"));
-        //locDevList.add(new HWDevice(R.drawable.type1, "Bike",1,"001060AA36F8","San Jose, CA USA",HWDevice.ITF_BLUETOOTH));
-        //locDevList.add(new HWDevice(R.drawable.type5, "earphone",5,"I1829IHUH801","Beijing, China",HWDevice.ITF_BLUETOOTH));
-        //locDevList.add(new HWDevice(R.drawable.type3, "trackr",3,"21HOI1390123","San Francisco, CA USA",HWDevice.ITF_BLUETOOTH));
-        //locDevList.add(new HWDevice(R.drawable.type4, "tile",4,"129879127912","Cupertino, CA USA",HWDevice.ITF_BLUETOOTH));
+        ContentResolver cr = getContentResolver();
+
+        locDevList.clear();
+
+        Cursor c = cr.query(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,null,null,null);
+
+        if (null == c)
+        {
+            return;
+        }
+
+        if (c.moveToFirst())
+        {
+            do
+            {
+                HWDevice temp = new HWDevice();
+                temp.buildHwDeviceByCursor(c);
+                //items.add(temp);
+                if(!locDevList.contains(temp)){
+                    locDevList.add(0,temp);
+                }
+            }
+            while(c.moveToNext());
+        }
+        //adpter.notifyDataSetChanged();
+
+        c.close();
 
     }
     /**
@@ -95,38 +120,34 @@ public class GlobalDevList extends Activity {
                 .setMessage("Please login to continue.")
                 .setCancelable(false)
                 .setIcon(R.drawable.ic_launcher)
-                .setPositiveButton("login", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                     // guides to login
                     public void onClick(DialogInterface dialog, int id) {
                         loginIntent = new Intent(GlobalDevList.this, Login_activity.class);
-                        startActivity(loginIntent);
+                        /**
+                         * Adds the FLAG_ACTIVITY_NO_HISTORY flag
+                         * So that when press back button, wont go back to login view.
+                        */
+                        loginIntent.setFlags(loginIntent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        startActivityForResult(loginIntent,LOGIN_REQUEST);
                     }
                 })
-                .setNeutralButton("signup", new DialogInterface.OnClickListener() {
+                .setNeutralButton("Signup", new DialogInterface.OnClickListener() {
                     // guides to signup
                     public void onClick(DialogInterface dialog, int id) {
                         loginIntent = new Intent(GlobalDevList.this, cloudSignup.class);
+                        loginIntent.setFlags(loginIntent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY); // same with above
+                        loginIntent.putExtra("URL","https://gglasspuppy.appspot.com/register/index");
                         startActivity(loginIntent);
                     }
                 })
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // something is wrong
-                        // does not go back to previous act
-                        // instead, it quits entire app
-                        return;
+                        dialog.cancel();
                     }
                 });
         builder.create().show();        // create and show the alert dialog
-    }
-
-    /**
-     *  Direct the user to login view activity
-     */
-    private void login(){
-        loginIntent = new Intent(GlobalDevList.this, Login_activity.class);
-        startActivity(loginIntent);
     }
 
     private void populateListView() {
@@ -154,10 +175,13 @@ public class GlobalDevList extends Activity {
             // Fill the image by type
             ImageView imageView = (ImageView)itemView.findViewById(R.id.item_icon);
             //imageView.setImageResource(currentLocDev.getImgID());
+            imageView.setImageBitmap(BitmapFactory.decodeFile(currentLocDev.getImageName()));
 
             // local device name:
             TextView nameText = (TextView) itemView.findViewById(R.id.item_dev_alias);
             nameText.setText(currentLocDev.getDevName());
+
+
 
             // local device city:
             TextView cityText = (TextView) itemView.findViewById(R.id.item_dev_position);
@@ -166,56 +190,18 @@ public class GlobalDevList extends Activity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                     class DownloadImageTask extends AsyncTask<String,String,String> {
+                    if(pref.getBoolean("loggedin",false)==false || pref.contains("loggedin")==false){
+                        toastThis("haven't logged in");
+                        welcome();// leads to dialog
+                    } else{
+                        /**
+                         * if already logged in
+                         * do something
+                         */
+                        toastThis("loggedin");
+                        promptSendScannerToCloud(currentLocDev);
+                    }
 
-
-                         @Override
-                         protected String doInBackground(String... strings) {
-
-                             HttpPost httpRequest = new HttpPost(strings[0]);
-                             HttpClient httpclient = new DefaultHttpClient();
-                             HttpResponse httpResponse = null;
-                             try
-                             {
-                                 httpResponse = httpclient.execute(httpRequest);
-                                 if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                                     //SEND SUCCESS
-                                     int k = 0;
-                                 }
-                                 else
-                                 {
-                                     //send error
-                                     int k = 1;
-                                 }
-                             }
-                             catch(Exception ex)
-                             {
-                                 ex.printStackTrace();
-                             }
-
-                             return "";
-                         }
-                     }
-                    //String message = "You clicked position " + "null"
-                    //        + " Which is hw called " + currentLocDev.getStrName();
-                    //Toast.makeText(LocalDevList.this, message, Toast.LENGTH_LONG).show();
-                    String urlInfo = "https://gglasspuppy.appspot.com/scanner/?";
-                    urlInfo += "devtype=" + currentLocDev.getHwItfType();
-                    urlInfo += "&" + "macinfo=" + currentLocDev.getMacId();
-                    urlInfo += "&" + "username=" + "abc";
-                    urlInfo += "&" + "pass=" + "a";
-
-                    new DownloadImageTask().execute(urlInfo);
-
-
-
-                    Intent intent = new Intent(GlobalDevList.this,cloudSignup.class);
-
-                    intent.putExtra("URL","https://gglasspuppy.appspot.com/register/index");
-                    //intent.putExtra("URL","www.google.com");
-                    //intent.putExtra("Mac",currentLocDev.getStrID());
-
-                    startActivity(intent);
                 }
             });
             return itemView;
@@ -239,11 +225,127 @@ public class GlobalDevList extends Activity {
 
     }
 
+    private void promptSendScannerToCloud(HWDevice currentLocDevVal)
+    {
+
+        final HWDevice currentLocDev = currentLocDevVal;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Everything Tag Server:")
+                .setMessage("Do you want send this device to server?")
+                .setCancelable(false)
+                .setIcon(R.drawable.ic_launcher)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    // guides to login
+                    public void onClick(DialogInterface dialog, int id) {
+                        sendScannerInfotoCloud(currentLocDev);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        builder.create().show();        // create and show the alert dialog
+    }
+
+    private void sendScannerInfotoCloud(HWDevice currentLocDev)
+    {
+        class DownloadImageTask extends AsyncTask<String,String,String> {
+
+
+            @Override
+            protected String doInBackground(String... strings) {
+
+                HttpPost httpRequest = new HttpPost(strings[0]);
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpResponse httpResponse = null;
+                try
+                {
+                    httpResponse = httpclient.execute(httpRequest);
+                    if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                        //SEND SUCCESS
+                        int k = 0;
+                        return "Success to send device to cloud ";
+                    }
+                    else
+                    {
+                        //send error
+                        return "Failed to send device to cloud ";
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+
+                return "Failed to send device to cloud ";
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(GlobalDevList.this);
+                builder.setTitle("Everything Tag Server:")
+                        .setMessage(result)
+                        .setCancelable(false)
+                        .setIcon(R.drawable.ic_launcher)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            // guides to login
+                            public void onClick(DialogInterface dialog, int id) {
+                                //loginIntent = new Intent(GlobalDevList.this, Login_activity.class);
+                                //startActivity(loginIntent);
+                                return;
+                            }
+                        })
+
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // something is wrong
+                                // does not go back to previous act
+                                // instead, it quits entire app
+                                return;
+                            }
+                        });
+                builder.create().show();        // create and show the alert dialog
+
+            }
+        }
+        //String message = "You clicked position " + "null"
+        //        + " Which is hw called " + currentLocDev.getStrName();
+        //Toast.makeText(LocalDevList.this, message, Toast.LENGTH_LONG).show();
+        String urlInfo = "https://gglasspuppy.appspot.com/scanner/?";
+        urlInfo += "devtype=" + HWDevice.getItfString(currentLocDev.getHwItfType());
+        urlInfo += "&" + "macinfo=" + currentLocDev.getMacId();
+        urlInfo += "&" + "username=" + "abc";
+        urlInfo += "&" + "pass=" + "a";
+
+        ContentResolver cr = GlobalDevList.this.getContentResolver();
+        DeviceDBProvider.setDeviceCloudPost(cr,currentLocDev.getHwItfType(),currentLocDev.getMacId(),DeviceDBProvider.SETPOST_VALUE);
+
+        new DownloadImageTask().execute(urlInfo);
+
+
+
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    private void toastThis( String msg ){
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        poputateLocDevList(); /** initialize instances */
+        populateListView(); /** generate list view */
+        //registerClickCallback(); /** register click effects */
     }
 
 

@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,6 +38,8 @@ public class activity_regdevselect extends Activity {
     private static final int STEPREG_ITF_GET = 1;
     private static final int STEPREG_DEVSEL = 5;
     private static final int STEPREG_ENABLE_BLUETOOTH_DISCOVERY = 3;
+
+    private int init_activity = 0;
 
     private static int hwType = HWDevice.ITF_INVALID;
     private int device_type_from_intent;
@@ -90,6 +93,11 @@ public class activity_regdevselect extends Activity {
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
+        if (null != mReceiver)
+        {
+            this.unregisterReceiver(mReceiver);
+        }
+
         mReceiver = new BroadcastReceiver()
         {
             @Override
@@ -112,6 +120,9 @@ public class activity_regdevselect extends Activity {
             }
 
         };
+
+        MainActivity.VAR_BLUETOOTH_DISCOVERY.close();
+
         registerReceiver(mReceiver, filter);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -124,6 +135,8 @@ public class activity_regdevselect extends Activity {
 //        mBluetoothAdapter.disable();
 //        mBluetoothAdapter.enable();
         mBluetoothAdapter.startDiscovery();
+
+        init_activity = 1;
 
     }
 
@@ -154,17 +167,6 @@ public class activity_regdevselect extends Activity {
 
             case STEPREG_ITF_GET:
             {
-                //list all of device of this type, save info into database after user select
-
-                //init hw itf type
-                //hwType = val.getIntExtra(activity_hwInterfaceSelect.HWITFSEL_TYPE,HWDevice.ITF_BLUETOOTH);
-
-                //if (hwType == HWDevice.ITF_INVALID)
-                //{
-                    //return;
-                //}
-
-                //loadAvailableDevice();
 
                 HwItfProvided provider = new HwItfProvidedImpl();
 
@@ -173,6 +175,9 @@ public class activity_regdevselect extends Activity {
                     provider.Enable(hwType);
                 }
 
+
+                provider.cancelDiscovery(hwType);
+                MainActivity.VAR_BLUETOOTH_DISCOVERY.close();
                 provider.startDiscovery(hwType);
 
             }
@@ -202,7 +207,8 @@ public class activity_regdevselect extends Activity {
                                 + DeviceDBProvider.KEY_MAC + " = " +"\"" +  dev_mac +"\"" + " AND " +DeviceDBProvider.KEY_NAME
                                 + " = "  +"\"" + dev_name +"\"";
 
-                if (cr.query(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,where,null,null).getCount() == 0)
+                Cursor c = cr.query(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,where,null,null);
+                if (c.getCount() == 0)
                 {
 
                     ContentValues values = new ContentValues();
@@ -220,7 +226,7 @@ public class activity_regdevselect extends Activity {
                 }
 
 
-
+                c.close();
 
                 BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 mBluetoothAdapter.cancelDiscovery();
@@ -250,7 +256,50 @@ public class activity_regdevselect extends Activity {
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        unregisterReceiver(mReceiver);
+        this.unregisterReceiver(mReceiver);
+        mReceiver = null;
+        MainActivity.VAR_BLUETOOTH_DISCOVERY.open();
+    }
+
+    @Override
+    protected  void onResume()
+    {
+        super.onResume();
+        if (0 == init_activity)
+        {
+            return;
+        }
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+
+        if (null != mReceiver)
+        {
+            this.unregisterReceiver(mReceiver);
+        }
+
+        mReceiver = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String action = intent.getAction();
+
+                // When discovery finds a device
+                if (BluetoothDevice.ACTION_FOUND.equals(action))
+                {
+                    // Get the BluetoothDevice object from the Intent
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    // Add the name and address to an array adapter to show in a ListView
+                    HWDevice temp = new HWDevice();
+                    temp.setDevName(device.getName());
+                    temp.setMacId(device.getAddress());
+                    nameList.add(temp);
+                    listAdapter.notifyDataSetChanged();
+                }
+            }
+
+        };
+
+        registerReceiver(mReceiver, filter);
     }
 
 

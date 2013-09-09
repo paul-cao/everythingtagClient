@@ -185,7 +185,7 @@ public class DeviceDetail extends Activity {
                 // to be tested
                 result_form_intent.putExtra(DEV_LGCTYPE,String.valueOf(type_spinner.getSelectedItem()));
                 // not implemented
-                result_form_intent.putExtra(DEV_IMGNAME,"notSpecified");
+                result_form_intent.putExtra(DEV_IMGNAME,imageName);
                 result_form_intent.putExtra(DEV_POST,false);
                 result_form_intent.putExtra(DEV_LOST,isLost_chb.isChecked());
                 setResult(Activity.RESULT_OK,result_form_intent);

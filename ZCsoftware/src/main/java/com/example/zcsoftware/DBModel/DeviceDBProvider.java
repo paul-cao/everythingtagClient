@@ -1,6 +1,7 @@
 package com.example.zcsoftware.DBModel;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,6 +25,9 @@ public class DeviceDBProvider extends ContentProvider {
     private static final String DATABASE_NAME = "ZCSoftwareProvider.db";
     public static final int DATABASE_VERSION = 1;
     public static final String DEVICE_TABLE = "devices";
+
+    public static final int SETPOST_VALUE = 1;
+    public static final int UNSETPOST_VALUE = 0;
 
 
 
@@ -113,20 +117,23 @@ public class DeviceDBProvider extends ContentProvider {
     private static final int DEVICES = 1;
     private static final int DEVICES_ID = 2;
 
-    public final static Uri CONTENT_URI = Uri.parse("content://com.example.zcsoftware.DBModel");
-    public final static Uri CONTENT_URI_DEVICE_ALL = Uri.parse("content://com.example.zcsoftware.DBModel/devices");
-    public final static Uri CONTENT_URI_DEVICE_NO = Uri.parse("content://com.example.zcsoftware.DBModel/devices/#");
+    private static final String URI_STR = "content://com.example.zcsoftware.deviceprovider";
+    public final static Uri CONTENT_URI = Uri.parse(URI_STR);
+    public final static Uri CONTENT_URI_DEVICE_ALL = Uri.parse("content://com.example.zcsoftware.deviceprovider/devices");
+
+    //public final static Uri CONTENT_URI_DEVICE_NO = Uri.parse("content://com.example.zcsoftware.DBModel/devices/#");
 
 
-    private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static UriMatcher uriMatcher ;
 
 
 
 
     static
     {
-        uriMatcher.addURI("content://com.example.zcsoftware.DBModel","devices",DEVICES);
-        uriMatcher.addURI("content://com.example.zcsoftware.DBModel","devices/#",DEVICES_ID);
+        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        uriMatcher.addURI("com.example.zcsoftware.deviceprovider","devices",DEVICES);
+        uriMatcher.addURI("com.example.zcsoftware.deviceprovider","devices/#",DEVICES_ID);
     }
 
 
@@ -168,13 +175,6 @@ public class DeviceDBProvider extends ContentProvider {
             orderBy = sortOrder;
         }
 
-        Cursor c1 = qb.query(deviceDB,
-                projection,
-                null, selectionArgs,
-                null, null,
-                orderBy);
-
-        int k1 = c1.getCount();
 
         // Apply the query to the underlying database.
         Cursor c = qb.query(deviceDB,
@@ -197,7 +197,7 @@ public class DeviceDBProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri _uri, ContentValues values) {
+    public  Uri insert(Uri _uri, ContentValues values) {
         // Insert the new row, will return the row number if
         // successful.
         long rowID = deviceDB.insert(DEVICE_TABLE, "DEVICE", values);
@@ -213,7 +213,7 @@ public class DeviceDBProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public  int delete(Uri uri, String selection, String[] selectionArgs) {
         int count;
         deviceDB.delete(DEVICE_TABLE, selection, selectionArgs);
         switch (uriMatcher.match(uri)) {
@@ -245,8 +245,9 @@ public class DeviceDBProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public synchronized int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count;
+        int n = uriMatcher.match(uri);
         switch (uriMatcher.match(uri)) {
             case DEVICES: count = deviceDB.update(DEVICE_TABLE, values,
                     selection, selectionArgs);
@@ -264,5 +265,32 @@ public class DeviceDBProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
+    }
+
+
+    public static void setDeviceCloudPost(ContentResolver cr, int itfType, String macInfo, int iPost)
+    {
+        String where = DeviceDBProvider.KEY_ITFTYPE + " = " + String.valueOf(itfType) + " AND "
+                 + DeviceDBProvider.KEY_MAC + " = " + "\"" +  macInfo + "\"" ;
+
+        ContentValues values = new ContentValues();
+        values.put(DeviceDBProvider.KEY_POST,iPost);
+
+        int count = cr.update(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,values,where,null);
+
+    }
+
+    public static synchronized void updateLocationinfo(ContentResolver cr, double lan, double log, int itfType, String macInfo)
+    {
+        String where = DeviceDBProvider.KEY_ITFTYPE + " = " + String.valueOf(itfType) + " AND "
+                + DeviceDBProvider.KEY_MAC + " = " + "\"" +  macInfo + "\"" ;
+
+        ContentValues values = new ContentValues();
+        values.put(DeviceDBProvider.KEY_LOCLAN,lan);
+        values.put(DeviceDBProvider.KEY_LOCLONG,log);
+
+        int count = cr.update(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,values,where,null);
+
+
     }
 }
