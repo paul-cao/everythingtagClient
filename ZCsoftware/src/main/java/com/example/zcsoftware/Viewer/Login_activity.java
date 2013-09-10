@@ -45,6 +45,8 @@ public class Login_activity extends Activity {
     private TextView loginResult_tv;
     private Button login_submit_btn;
 
+
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
@@ -68,7 +70,7 @@ public class Login_activity extends Activity {
 
     private boolean processSignin()
     {
-        String urlStr = "https://gglasspuppy.appspot.com/report/";
+        String urlStr = "https://gglasspuppy.appspot.com/register/signin";
 
         HttpPost httpRequest = new HttpPost(urlStr);
 
@@ -180,7 +182,7 @@ public class Login_activity extends Activity {
         SharedPreferences pref;
         pref = getApplicationContext().getSharedPreferences(MainActivity.PREFERENCE_APP_ID, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        if(pref.getBoolean("loggedin",false)==false || pref.contains("loggedin")==false)
+        if(pref.getBoolean(MainActivity.PREFERENCE_APP_LOGINSTATUS,false)==true && pref.contains(MainActivity.PREFERENCE_APP_LOGINSTATUS)==true)
         {
             Intent intent  = new Intent(this,EverythingTagCloudService.class);
             startService(intent);

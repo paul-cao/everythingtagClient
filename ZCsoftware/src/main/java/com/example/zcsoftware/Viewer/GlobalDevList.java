@@ -60,6 +60,16 @@ public class GlobalDevList extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // shared preference related
+        setContentView(R.layout.device_list_activity);
+        poputateLocDevList(); /** initialize instances */
+        populateListView(); /** generate list view */
+        registerClickCallback(); /** register click effects */
+
+        readUserInformation();
+    }
+
+    private void readUserInformation()
+    {
         pref = getApplicationContext().getSharedPreferences(MainActivity.PREFERENCE_APP_ID, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
@@ -72,10 +82,7 @@ public class GlobalDevList extends Activity {
         {
             this.password = pref.getString(MainActivity.PREFERENCE_APP_PASSWORD,"");
         }
-        setContentView(R.layout.device_list_activity);
-        poputateLocDevList(); /** initialize instances */
-        populateListView(); /** generate list view */
-        registerClickCallback(); /** register click effects */
+
     }
 
     private void poputateLocDevList() {
@@ -190,7 +197,7 @@ public class GlobalDevList extends Activity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(pref.getBoolean("loggedin",false)==false || pref.contains("loggedin")==false){
+                    if(pref.getBoolean(MainActivity.PREFERENCE_APP_LOGINSTATUS,false)==false || pref.contains(MainActivity.PREFERENCE_APP_LOGINSTATUS)==false){
                         toastThis("haven't logged in");
                         welcome();// leads to dialog
                     } else{
@@ -311,14 +318,16 @@ public class GlobalDevList extends Activity {
 
             }
         }
+
+        readUserInformation();
         //String message = "You clicked position " + "null"
         //        + " Which is hw called " + currentLocDev.getStrName();
         //Toast.makeText(LocalDevList.this, message, Toast.LENGTH_LONG).show();
         String urlInfo = "https://gglasspuppy.appspot.com/scanner/?";
         urlInfo += "devtype=" + HWDevice.getItfString(currentLocDev.getHwItfType());
         urlInfo += "&" + "macinfo=" + currentLocDev.getMacId();
-        urlInfo += "&" + "username=" + "abc";
-        urlInfo += "&" + "pass=" + "a";
+        urlInfo += "&" + "username=" + userName;
+        urlInfo += "&" + "pass=" + password;
 
         ContentResolver cr = GlobalDevList.this.getContentResolver();
         DeviceDBProvider.setDeviceCloudPost(cr,currentLocDev.getHwItfType(),currentLocDev.getMacId(),DeviceDBProvider.SETPOST_VALUE);

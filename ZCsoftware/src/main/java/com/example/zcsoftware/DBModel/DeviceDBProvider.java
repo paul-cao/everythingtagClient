@@ -278,7 +278,9 @@ public class DeviceDBProvider extends ContentProvider {
 
         int count = cr.update(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,values,where,null);
 
-    }
+        cr.notifyChange(DeviceDBProvider.CONTENT_URI_DEVICE_ALL, null);
+
+     }
 
     public static synchronized void updateLocationinfo(ContentResolver cr, double lan, double log, int itfType, String macInfo)
     {
@@ -290,6 +292,8 @@ public class DeviceDBProvider extends ContentProvider {
         values.put(DeviceDBProvider.KEY_LOCLONG,log);
 
         int count = cr.update(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,values,where,null);
+
+        cr.notifyChange(DeviceDBProvider.CONTENT_URI_DEVICE_ALL, null);
 
 
     }
