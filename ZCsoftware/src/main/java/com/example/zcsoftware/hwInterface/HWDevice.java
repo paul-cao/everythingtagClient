@@ -82,6 +82,7 @@ public class HWDevice {
     }
 
 
+
     public static String getItfString(int id)
     {
         if (id >= ITF_INVALID)
@@ -218,6 +219,7 @@ public class HWDevice {
         this.setLogicType(c.getInt(DeviceDBProvider.LGCTYPE_COLUMN));
         this.setMacId(c.getString(DeviceDBProvider.MAC_COLUMN));
         this.setHwItfType(c.getInt(DeviceDBProvider.ITFTYPE_COLUMN));
+        String aaa = c.getString(DeviceDBProvider.ALIAS_COLUMN);
         this.setAliasName(c.getString(DeviceDBProvider.ALIAS_COLUMN));
         this.setImageName(c.getString(DeviceDBProvider.IMAGENAME_COLUMN));
         this.setDescription(c.getString(DeviceDBProvider.DETAILS_COLUMN));
@@ -225,6 +227,8 @@ public class HWDevice {
         this.setLongitude(c.getDouble(DeviceDBProvider.LOCLONG_COLUMN));
         this.setLost(c.getInt(DeviceDBProvider.LOST_COLUMN));
         this.setPost(c.getInt(DeviceDBProvider.POST_COLUMN));
+        int l = c.getInt(DeviceDBProvider.ID_COLUMN);
+        this.setiID(c.getInt(DeviceDBProvider.ID_COLUMN));
 
 
     }
@@ -232,7 +236,19 @@ public class HWDevice {
     @Override
     public String toString()
     {
-        return this.getDevName();
+        return this.getDisplayName();
 
+    }
+
+    public String getDisplayName()
+    {
+        if ((null == this.getAliasName()) || (0 == this.getAliasName().length()))
+        {
+            return this.getDevName();
+        }
+        else
+        {
+            return this.getAliasName();
+        }
     }
 }

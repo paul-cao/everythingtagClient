@@ -22,6 +22,7 @@ import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Xml;
+import android.widget.Toast;
 
 import com.example.zcsoftware.DBModel.DeviceDBProvider;
 import com.example.zcsoftware.R;
@@ -147,7 +148,7 @@ public class EverythingTagCloudService extends Service {
 
                                 @Override
                                 protected String doInBackground(String... strings) {
-                                    reportDeviceInfo(HWDevice.getItfString(HWDevice.ITF_BLUETOOTH),strings[0]);
+                                    reportDeviceInfo(String.valueOf(HWDevice.ITF_BLUETOOTH),strings[0]);
                                     return "";
                                 }
                             }
@@ -256,7 +257,9 @@ public class EverythingTagCloudService extends Service {
 
     private void processReadDeviceFromCloud(HWDevice dev)
     {
-        String url = "https://gglasspuppy.appspot.com/read/?devtype=" + HWDevice.getItfString(dev.getHwItfType()) +
+
+        //Toast.makeText(getApplicationContext(), "begin call processReadDeviceFromCloud", Toast.LENGTH_LONG).show();
+        String url = "https://gglasspuppy.appspot.com/read/info/?devtype=" + String.valueOf(dev.getHwItfType()) +
                 "&macinfo=" + dev.getMacId() + "&username=" + username + "&pass=" + password;
 
         //new DownloadImageTask().execute(url);
@@ -300,7 +303,7 @@ public class EverythingTagCloudService extends Service {
                 if ((Math.abs(dlan - lanVal) < 0.0001) && (Math.abs(dlog - logVal) < 0.0001))
                 {
                     //equal
-                    sendNotification(strLocation);
+                    sendNotification(dev.getDisplayName(),strLocation,itfType,macinfo);
                     return ;
                 }
                 else
@@ -310,7 +313,7 @@ public class EverythingTagCloudService extends Service {
                     DeviceDBProvider.updateLocationinfo(cr,dlan,dlog,itfType,macinfo);
 
                     //send notification
-                    sendNotification(strLocation);
+                    sendNotification(dev.getDisplayName(),strLocation,itfType,macinfo);
 
                 }
             }
@@ -327,7 +330,7 @@ public class EverythingTagCloudService extends Service {
         }
     }
 
-    private void sendNotification(String strloc)
+    private void sendNotification(String devName,String strloc,int itfType,String macinfo)
     {
         Notification noti = new Notification();
         noti.defaults |= Notification.DEFAULT_LIGHTS;
@@ -336,10 +339,13 @@ public class EverythingTagCloudService extends Service {
         noti.tickerText = "Location of your device is update";
         noti.icon = R.drawable.ttype4;
 
+        Intent intent = new Intent(EverythingTagCloudService.this,cloudSignup.class);
+        String url = "https://gglasspuppy.appspot.com/read/map/?username="+ username + "&pass=" + password + "&devtype=" + String.valueOf(itfType) + "&macinfo=" + macinfo;
+        intent.putExtra("URL",url);
         PendingIntent contentIntent = PendingIntent.getActivity
-                (EverythingTagCloudService.this, 0,new Intent(EverythingTagCloudService.this,cloudSignup.class), 0);
+                (EverythingTagCloudService.this, 0,intent, 0);
 
-        noti.setLatestEventInfo(this.getApplicationContext(),"EverythingTag Location update","Your device is at " + strloc,contentIntent);
+        noti.setLatestEventInfo(this.getApplicationContext(),"EverythingTag Location update","Your device (" + devName + ") is at" + strloc,contentIntent);
 
         NotificationManager mNotificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0,noti);
@@ -454,7 +460,7 @@ public class EverythingTagCloudService extends Service {
 
         if (null == location)
         {
-            strLoc = "1.89,2.99";
+            strLoc = "37.5483,-121.9886";
         }
         else
         {
@@ -472,7 +478,7 @@ public class EverythingTagCloudService extends Service {
             return ;
         }
 
-        String urlStr = "https://gglasspuppy.appspot.com/report/";
+        String urlStr = "https://gglasspuppy.appspot.com/report/?" + "username=" + username + "&pass=" + password;;
 
         HttpPost httpRequest = new HttpPost(urlStr);
 

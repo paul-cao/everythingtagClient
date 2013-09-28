@@ -132,9 +132,18 @@ public class activity_regdevselect extends Activity {
             finish();
         }
 
-//        mBluetoothAdapter.disable();
-//        mBluetoothAdapter.enable();
-        mBluetoothAdapter.startDiscovery();
+        HwItfProvided provider = new HwItfProvidedImpl();
+
+        if (!(provider.isHwItfOpen(hwType)))
+        {
+            provider.Enable(hwType);
+        }
+
+
+        provider.cancelDiscovery(hwType);
+        MainActivity.VAR_BLUETOOTH_DISCOVERY.close();
+        provider.startDiscovery(hwType);
+
 
         init_activity = 1;
 

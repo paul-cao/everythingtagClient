@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.database.Cursor;
 
 import com.example.zcsoftware.R;
 import com.example.zcsoftware.hwInterface.HWDevice;
@@ -47,28 +48,32 @@ public class DeviceDetail extends Activity {
     private String id;
     private String mac;
     private String name;
-    private String description;
-    private String alias;
+    //private String description;
+    private String nickname;
     private String imageName; // actually it is the absolute URL of the image, equals to mCurrentPhotoPath below
-    private String kind; // laptop, earphone etc
-    private String detail;
-    private String type; // bike, phone etc
+    private String pickedImg; // the image the user selected from his gallery
+    private int type; // bike, phone etc
     private String latitude;
     private String longitude;
     private boolean isLost;
+    private String showDelBtn;
 
     private TextView mac_tv;
     private TextView deviceName_tv;
     private TextView kind_tv;
-    private Button takePic_btn;
+    //private Button takePic_btn;
     private EditText alias_et;
-    private EditText description_et;
+    //private EditText description_et;
     private Spinner type_spinner;
     private CheckBox isLost_chb;
     private Button save_btn;
+    private Button pick_btn;
 
     private Intent result_form_intent;
     private Intent in_coming_intent;
+    private int idvalue;
+
+    private static final int ACTIVITY_SELECT_IMAGE = 100;
 
     public static final String DEV_NAME = "dev_name";
     public static final String DEV_MAC = "dev_mac";
@@ -78,7 +83,9 @@ public class DeviceDetail extends Activity {
     public static final String DEV_IMGNAME = "dev_imagename";
     public static final String DEV_POST = "dev_post";
     public static final String DEV_LOST = "dev_lost";
-
+    public static final String DEV_HWTYPE = "dev_hwtype";
+    public static final String DEV_ID = "dev_id";
+    public static final String DEV_SHOW_DEL = "show_del";
     /**-----------------------------------------------------------------------------------------------------------------------------------------------------------
      * Code deals with camera, downloaded from Google Official Training Examples.
      *
@@ -91,6 +98,7 @@ public class DeviceDetail extends Activity {
      *  +     FroyoAlbumDirFactory.java
      -----------------------------------------------------------------------------------------------------------------------------------------------------------*/
     private static final int ACTION_TAKE_PHOTO_B = 1;
+    private static final int ACTION_TAKE_PHOTO_S = 2;
     private static final String BITMAP_STORAGE_KEY = "viewbitmap";
     private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
     private ImageView mImageView;
@@ -103,7 +111,7 @@ public class DeviceDetail extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.device_detail);
+        setContentView(R.layout.device_detail_with_delete);
         iniGoogleCameraCode();
         initVar();
         initUI();
@@ -114,6 +122,13 @@ public class DeviceDetail extends Activity {
      * UI
      */
     private void initUI(){
+
+        Button loc_del=(Button)findViewById(R.id.loc_del_btn);
+        Button glo_del=(Button)findViewById(R.id.glo_del_btn);
+        if(showDelBtn.toLowerCase().equals("no")){
+            loc_del.setVisibility(View.GONE);
+            glo_del.setVisibility(View.GONE);
+        }
         mac_tv = (TextView)findViewById(R.id.deviveDetail_mac_tv);
         mac_tv.setText(mac);
 
@@ -121,13 +136,17 @@ public class DeviceDetail extends Activity {
         deviceName_tv.setText(name);
 
         kind_tv = (TextView)findViewById(R.id.deviveDetail_kind_tv);
-        takePic_btn = (Button)findViewById(R.id.deviceDetail_takePic_btn);
+        //takePic_btn = (Button)findViewById(R.id.deviceDetail_takePic_btn);
         save_btn = (Button)findViewById(R.id.deviveDetail_save_btn);
+        pick_btn = (Button)findViewById(R.id.deviceDetail_pickPic_btn);
 
         alias_et = (EditText)findViewById(R.id.deviveDetail_alias_et);
         alias_et.setFocusable(false);
+        if(nickname!=null){
+            alias_et.setText(nickname.toString());
+        }
 
-        description_et = (EditText)findViewById(R.id.deviveDetail_description_et);
+        //description_et = (EditText)findViewById(R.id.deviveDetail_description_et);
         isLost_chb = (CheckBox)findViewById(R.id.deviveDetail_islost_flag);
         type_spinner = (Spinner) findViewById(R.id.deviceDetail_type_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -137,6 +156,32 @@ public class DeviceDetail extends Activity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         type_spinner.setAdapter(adapter);
+
+        type_spinner.setSelection(type);
+
+        /*
+        if(type!=null){
+            if(type.toLowerCase().equals("camera")){
+                type_spinner.setSelection(adapter.getPosition("camera"));
+            } else if(type.toLowerCase().equals("key")){
+                type_spinner.setSelection(adapter.getPosition("key"));
+            } else if(type.toLowerCase().equals("phone")){
+                type_spinner.setSelection(2);
+            } else if(type.toLowerCase().equals("tile")){
+                type_spinner.setSelection(3);
+            } else if(type.toLowerCase().equals("car")){
+                type_spinner.setSelection(4);
+            } else if(type.toLowerCase().equals("trackr")){
+                type_spinner.setSelection(5);
+            } else if(type.toLowerCase().equals("keyboard")){
+                type_spinner.setSelection(6);
+            } else if(type.toLowerCase().equals("unknown")){
+                type_spinner.setSelection(7);
+            }
+        }
+        */
+        // isLost, the check-box
+        isLost_chb.setChecked(isLost);
     }
 
     /**
@@ -147,9 +192,39 @@ public class DeviceDetail extends Activity {
         Bundle extras = in_coming_intent.getExtras();
         mac = "00-00-00-00-00";
         name = "unknown device name";
+        showDelBtn="no";
         if(extras!=null){
             if(extras.getString(DEV_MAC)!=null) mac = extras.getString(DEV_MAC);
             if(extras.getString(DEV_NAME)!=null) name=extras.getString(DEV_NAME);
+            if(extras.getString(DEV_ALIAS)!=null) nickname=extras.getString(DEV_ALIAS);
+            //if(extras.getString(DEV_DESP)!=null) description=extras.getString(DEV_DESP);
+            type = extras.getInt(DEV_LGCTYPE);
+            /*
+            if(extras.getString(DEV_LGCTYPE)!=null) {
+                type=extras.getString(DEV_LGCTYPE);
+            } else type="camera";
+            */
+
+            imageName = extras.getString(DEV_IMGNAME);
+//            if(extras.getBoolean(DEV_LOST)!=null)
+            if(extras.getBoolean(DEV_LOST)==true)isLost=true;
+            else isLost = false;
+            if(extras.getString(DEV_SHOW_DEL)!=null) showDelBtn=extras.getString(DEV_SHOW_DEL);
+            idvalue=extras.getInt(DEV_ID);
+
+            ImageView imageView = (ImageView)findViewById(R.id.imageView1);
+            if (null ==  imageName)
+            {
+                imageView.setImageResource(R.drawable.bt);
+            }
+            else
+            {
+                //imageView.setImageResource(currentLocDev.getImgID());
+                imageView.setImageBitmap(BitmapFactory.decodeFile(imageName));
+                //imageView.setClickable(true);
+                imageView.setFocusable(false);
+            }
+
         }
     }
 
@@ -165,14 +240,14 @@ public class DeviceDetail extends Activity {
                 alias_et.requestFocus();
             }
         });
-        description_et.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                description_et.setFocusableInTouchMode(true);
-                description_et.setFocusable(true);
-                description_et.requestFocus();
-            }
-        });
+//        description_et.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                description_et.setFocusableInTouchMode(true);
+//                description_et.setFocusable(true);
+//                description_et.requestFocus();
+//            }
+//        });
         save_btn.setOnClickListener(new View.OnClickListener() {
             //type = R.array.device_type_array[type_spinner.getSelectedItemPosition()];
             @Override
@@ -181,15 +256,25 @@ public class DeviceDetail extends Activity {
                 result_form_intent.putExtra(DEV_NAME,name);
                 result_form_intent.putExtra(DEV_MAC,mac);
                 result_form_intent.putExtra(DEV_ALIAS,alias_et.getText().toString());
-                result_form_intent.putExtra(DEV_DESP,description_et.getText().toString());
+                //result_form_intent.putExtra(DEV_DESP,description_et.getText().toString());
                 // to be tested
-                result_form_intent.putExtra(DEV_LGCTYPE,String.valueOf(type_spinner.getSelectedItem()));
+                result_form_intent.putExtra(DEV_LGCTYPE,(type_spinner.getSelectedItemPosition()));
                 // not implemented
                 result_form_intent.putExtra(DEV_IMGNAME,imageName);
                 result_form_intent.putExtra(DEV_POST,false);
                 result_form_intent.putExtra(DEV_LOST,isLost_chb.isChecked());
+                result_form_intent.putExtra(DEV_ID,idvalue);
                 setResult(Activity.RESULT_OK,result_form_intent);
                 finish();
+            }
+        });
+        pick_btn.setOnClickListener(new View.OnClickListener() {
+            //type = R.array.device_type_array[type_spinner.getSelectedItemPosition()];
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
             }
         });
     }
@@ -316,6 +401,7 @@ public class DeviceDetail extends Activity {
 
         switch(actionCode) {
             case ACTION_TAKE_PHOTO_B:
+            case ACTION_TAKE_PHOTO_S:
                 File f = null;
 
                 try {
@@ -340,13 +426,29 @@ public class DeviceDetail extends Activity {
             galleryAddPic();
             mCurrentPhotoPath = null;
         }
+    }
 
+    private void handleSmallCameraPhoto(Intent intent) {
+        Bundle extras = intent.getExtras();
+        mImageBitmap = (Bitmap) extras.get("data");
+        mImageView.setImageBitmap(mImageBitmap);
+        //mVideoUri = null;
+        mImageView.setVisibility(View.VISIBLE);
+        //mVideoView.setVisibility(View.INVISIBLE);
+    }
+
+    private void handleNewSmallCameraPhoto() {
+        if (mCurrentPhotoPath != null) {
+            setPic();
+            galleryAddPic();
+            mCurrentPhotoPath = null;
+        }
     }
     Button.OnClickListener mTakePicOnClickListener =
             new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
+                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
                 }
             };
 
@@ -360,6 +462,32 @@ public class DeviceDetail extends Activity {
                 }
                 break;
             } // ACTION_TAKE_PHOTO_B
+
+            case ACTION_TAKE_PHOTO_S: {
+                if (resultCode == RESULT_OK) {
+                    //handleSmallCameraPhoto(data);
+                    handleNewSmallCameraPhoto();
+                }
+                break;
+            } // ACTION_TAKE_PHOTO_S
+
+            case ACTIVITY_SELECT_IMAGE:
+                if(resultCode == RESULT_OK){
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    Cursor cursor = getContentResolver().query(
+                            selectedImage, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String filePath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    imageName = filePath;
+                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+                    mImageView.setImageBitmap(yourSelectedImage);
+                }
         } // switch
     }
 

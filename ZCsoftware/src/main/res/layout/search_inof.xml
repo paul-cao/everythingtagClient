@@ -19,17 +19,26 @@
         android:orientation="vertical"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
+        <TextView
+                android:text="Device Name" android:id="@+id/tvSearchName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="center"
+                android:layout_margin="20dip"
+                android:textSize="30dip"/>
+
         <ImageView
             android:layout_width="250dip"
-            android:layout_height="180dip"
-            android:background="@drawable/signal_ndot_mask" android:id="@+id/imageView"
+            android:layout_height="145dip"
+            android:src="@drawable/signal_1" android:id="@+id/imageView"
             android:layout_gravity="center"
             android:layout_marginBottom="0dip"/>
 
         <ImageView
             android:layout_gravity="center" android:id="@+id/signal_dot"
             android:layout_width="300dp"
-            android:layout_height="80dp"
+            android:layout_height="45dp"
             android:src="@drawable/signal_dot2"
             />
     </LinearLayout>
@@ -45,12 +54,12 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:padding="15dip"
-        android:background="#e8e9e4">
+        >
         <LinearLayout
             android:orientation="vertical"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_weight="1.2"
+
             android:layout_gravity="left"
             >
             <ImageView
@@ -62,47 +71,42 @@
 
         </LinearLayout> <!--lower part . left -->
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingLeft="12dip"
-            android:layout_weight="1.5"
-            >
+        <!--<LinearLayout-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:paddingLeft="12dip"-->
+            <!--android:layout_weight="1.5"-->
+            <!-->-->
             <!--<TextView-->
                 <!--android:text="Device Detail:" android:id="@+id/tvSearchRSSI"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_gravity="left|center_vertical"/>-->
 
-            <TextView
-                android:text="Device Name" android:id="@+id/tvSearchName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
-            <TextView
-                android:text="Mac Address:"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+            <!--<TextView-->
+                <!--android:text="Mac Address:"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--/>-->
 
-            <TextView
-                android:text="00-00-00-00" android:id="@+id/mac_tv"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"/>
+            <!--<TextView-->
+                <!--android:text="00-00-00-00" android:id="@+id/mac_tv"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="left|center_vertical"/>-->
 
-            <TextView
-                android:text="RSSI value" android:id="@+id/tvSearchRSSIValue"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <!--<TextView-->
+                <!--android:text="RSSI value" android:id="@+id/tvSearchRSSIValue"-->
+                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"/>-->
 
-        </LinearLayout> <!--lower part . right -->
+        <!--</LinearLayout> &lt;!&ndash;lower part . right &ndash;&gt;-->
     </LinearLayout> <!--lower part -->
 
     <!--<LinearLayout-->

@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    >
 
  <ScrollView android:layout_width="match_parent"
      android:layout_height="match_parent">
@@ -77,20 +78,18 @@
              android:orientation="horizontal"
              android:layout_height="match_parent"
              android:layout_width="match_parent"
-             android:padding="10dip"
+             android:paddingTop="10dip"
              android:layout_weight="1"
              >
              <ImageView
                   android:id="@+id/imageView1"
-                 android:layout_width="fill_parent"
+                 android:layout_width="wrap_content"
                  android:layout_height="fill_parent"
-                 android:background="@drawable/type4"
+                 android:src="@drawable/bt"
                  android:layout_gravity="right|center_vertical" />
+             <!-- using src instead of background will avoid scale -->
          </LinearLayout> <!-- a single item one -->
     </LinearLayout> <!-- a horizontal one -->
-
-
-
 
      <LinearLayout
          android:orientation="horizontal"

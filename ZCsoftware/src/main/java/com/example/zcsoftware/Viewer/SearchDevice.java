@@ -29,11 +29,11 @@ import java.util.List;
 public class SearchDevice extends Activity implements Runnable{
 
     //private ImageView signalView;
-    TextView distance_tv;
+    //TextView distance_tv;
     private ImageView dot_iv;
     private ImageView signal_ndot_iv;
     private ImageView devicePic;
-    private TextView deviceMac;
+    //private TextView deviceMac;
     private String photoPath;
     int imagesToShow[] = { R.drawable.signal_dot_0 };
 
@@ -111,8 +111,8 @@ public class SearchDevice extends Activity implements Runnable{
 
         // signal none-dot-part image view
         signal_ndot_iv = (ImageView)findViewById(R.id.imageView);
-        TextView mac_tv = (TextView)findViewById(R.id.mac_tv);
-        mac_tv.setText(macInfo);
+        //TextView mac_tv = (TextView)findViewById(R.id.mac_tv);
+        //mac_tv.setText(macInfo);
 
         // dot image view
         dot_iv = (ImageView)findViewById(R.id.signal_dot);
@@ -122,8 +122,8 @@ public class SearchDevice extends Activity implements Runnable{
 
         tvName.setText(name);
         final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        final TextView tvRSSI = (TextView)findViewById(R.id.tvSearchRSSIValue);
-        tvRSSI.setText("Acquiring RSSI value...");
+        //final TextView tvRSSI = (TextView)findViewById(R.id.tvSearchRSSIValue);
+        //tvRSSI.setText("Acquiring RSSI value...");
 
         MainActivity.VAR_BLUETOOTH_DISCOVERY.close();
         mBluetoothAdapter.cancelDiscovery();
@@ -156,7 +156,7 @@ public class SearchDevice extends Activity implements Runnable{
                             float newRssi = calculateFinalRssi(rssi);
                             float dis = calculateDistance(newRssi);
 
-                            tvRSSI.setText(String.valueOf(rssi));
+                            //tvRSSI.setText(String.valueOf(rssi));
 
                             /**
                              * Graphic Part
@@ -221,7 +221,7 @@ public class SearchDevice extends Activity implements Runnable{
      */
     private void animate(final ImageView imageView, final int images[], final int imageIndex, final boolean forever) {
 
-        int fadeInDuration = 1000; // Configure time values here
+        int fadeInDuration = 800; // Configure time values here
         int timeBetween = 200;
         int fadeOutDuration = 400;
 

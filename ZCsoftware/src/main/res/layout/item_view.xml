@@ -1,48 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="70dip"
                 android:layout_margin="0dip"
                 android:clickable="true"
+                android:orientation="horizontal"
                 android:focusableInTouchMode="false"
+                android:padding="5dip"
                 android:background="#e8e8e8">
 
     <ImageView
-            android:id="@+id/item_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dip"
-            android:layout_marginTop="5dip"
-            android:paddingBottom="5dip"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:adjustViewBounds="true"
-            android:maxHeight="65dp"
-            android:maxWidth="65dp"
-            android:src="@drawable/type1" />
+        android:id="@+id/item_icon"
+        android:layout_width="65dip"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@drawable/type1" />
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+    >
+        <TextView
             android:id="@+id/item_dev_alias"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20dip"
+            android:singleLine="true"
+            android:paddingTop="7dip"
             android:text="name: not specified"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_above="@+id/item_txtCondition"
-            android:layout_toRightOf="@+id/item_icon"
-            android:layout_marginTop="14dip"
             android:layout_marginLeft="12dip"/>
-
-    <TextView
+        <TextView
             android:id="@+id/item_dev_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="13dip"
             android:text="last position: unknown"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_toRightOf="@+id/item_icon"
-            android:layout_below="@+id/item_dev_alias"
-            android:layout_marginTop="0dip"
+            android:paddingTop="3dip"
             android:layout_marginLeft="12dip"/>
 
-</RelativeLayout>
+    </LinearLayout>// layout for name and position
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        >
+        <ImageView
+            android:id="@+id/item_dev_edit"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:src="@drawable/wheel"
+            android:layout_marginRight="0dip"
+        />
+    </LinearLayout>
+
+</LinearLayout>

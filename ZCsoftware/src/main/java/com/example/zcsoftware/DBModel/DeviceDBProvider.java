@@ -297,4 +297,13 @@ public class DeviceDBProvider extends ContentProvider {
 
 
     }
+
+    public static synchronized void updateRecord(ContentResolver cr, int id, ContentValues values)
+    {
+        String where = DeviceDBProvider.KEY_ID + " = " + String.valueOf(id) ;
+        int count = cr.update(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,values,where,null);
+
+        cr.notifyChange(DeviceDBProvider.CONTENT_URI_DEVICE_ALL, null);
+
+    }
 }

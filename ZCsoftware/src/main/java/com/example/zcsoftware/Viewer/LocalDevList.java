@@ -2,6 +2,7 @@ package com.example.zcsoftware.Viewer;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -100,17 +101,27 @@ public class LocalDevList extends Activity {
 
             // Fill the image by type
             ImageView imageView = (ImageView)itemView.findViewById(R.id.item_icon);
-            //imageView.setImageResource(currentLocDev.getImgID());
-            imageView.setImageBitmap(BitmapFactory.decodeFile(currentLocDev.getImageName()));
-            //imageView.setClickable(true);
-            imageView.setFocusable(false);
+
+            if (null ==  currentLocDev.getImageName())
+            {
+                imageView.setImageResource(R.drawable.bt);
+            }
+            else
+            {
+                //imageView.setImageResource(currentLocDev.getImgID());
+                imageView.setImageBitmap(BitmapFactory.decodeFile(currentLocDev.getImageName()));
+                //imageView.setClickable(true);
+                imageView.setFocusable(false);
+            }
 
             // local device name:
             TextView nameText = (TextView) itemView.findViewById(R.id.item_dev_alias);
-            nameText.setText(currentLocDev.getDevName());
+            nameText.setText(currentLocDev.getDisplayName());
 
             nameText.setFocusable(false);
 
+
+            ImageView imageViewDetail = (ImageView)itemView.findViewById(R.id.item_dev_edit);
             // local device city:
             TextView cityText = (TextView) itemView.findViewById(R.id.item_dev_position);
             //cityText.setText(currentLocDev.getCity());
@@ -141,6 +152,28 @@ public class LocalDevList extends Activity {
                 }
             });
 
+
+
+            imageViewDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(LocalDevList.this,DeviceDetail.class);
+
+                    intent.putExtra(DeviceDetail.DEV_NAME,currentLocDev.getDevName());
+                    intent.putExtra(DeviceDetail.DEV_MAC,currentLocDev.getMacId());
+                    intent.putExtra(DeviceDetail.DEV_ALIAS,currentLocDev.getAliasName());
+                    intent.putExtra(DeviceDetail.DEV_DESP,currentLocDev.getDescription());
+                    intent.putExtra(DeviceDetail.DEV_LGCTYPE,currentLocDev.getLogicType());
+                    intent.putExtra(DeviceDetail.DEV_IMGNAME,currentLocDev.getImageName());
+                    intent.putExtra(DeviceDetail.DEV_HWTYPE,currentLocDev.getHwItfType());
+                    intent.putExtra(DeviceDetail.DEV_SHOW_DEL,"yes");
+                    int m = currentLocDev.getiID();
+                    intent.putExtra(DeviceDetail.DEV_ID,currentLocDev.getiID());
+
+                    startActivityForResult(intent, 1);
+                }
+            });
+
             return itemView;
         }
     }
@@ -159,13 +192,76 @@ public class LocalDevList extends Activity {
 
                 Intent intent = new Intent(LocalDevList.this,SearchDevice.class);
 
-                intent.putExtra("DeviceName",clickedDev.getDevName());
+                intent.putExtra(DeviceDetail.DEV_NAME,clickedDev.getDevName());
+                intent.putExtra(DeviceDetail.DEV_MAC,clickedDev.getMacId());
+
+
                 intent.putExtra("Mac",clickedDev.getMacId());
 
-                startActivity(intent);
+                startActivityForResult(intent, 1);
 
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int reqCode, int resCode, Intent val)
+    {
+        if (resCode == Activity.RESULT_OK)
+        {
+            if (null == val)
+            {
+                return;
+            }
+            {
+                String dev_name = val.getStringExtra(DeviceDetail.DEV_NAME);
+                String dev_mac = val.getStringExtra(DeviceDetail.DEV_MAC);
+                String dev_alias = val.getStringExtra(DeviceDetail.DEV_ALIAS);
+                String dev_desp = val.getStringExtra(DeviceDetail.DEV_DESP);
+                String dev_imagename = val.getStringExtra(DeviceDetail.DEV_IMGNAME);
+                int dev_lgctype = val.getIntExtra(DeviceDetail.DEV_LGCTYPE,0);
+                int dev_post = val.getIntExtra(DeviceDetail.DEV_POST,0);
+                int dev_lost = val.getIntExtra(DeviceDetail.DEV_LOST,0);
+                int id =  val.getIntExtra(DeviceDetail.DEV_ID,10000);
+                int hwtype =  val.getIntExtra(DeviceDetail.DEV_HWTYPE,0);
+
+                ContentResolver cr = this.getContentResolver();
+
+                String where = DeviceDBProvider.KEY_ID + " = "  + String.valueOf(id);
+
+                Cursor c = cr.query(DeviceDBProvider.CONTENT_URI_DEVICE_ALL,null,where,null,null);
+                if (c.getCount() == 0)
+                {
+
+                    ContentValues values = new ContentValues();
+                    values.put(DeviceDBProvider.KEY_NAME,dev_name);
+                    values.put(DeviceDBProvider.KEY_MAC,dev_mac);
+                    values.put(DeviceDBProvider.KEY_ALIAS,dev_alias);
+                    values.put(DeviceDBProvider.KEY_DETAILS,dev_desp);
+                    values.put(DeviceDBProvider.KEY_ITFTYPE,hwtype);
+                    values.put(DeviceDBProvider.KEY_IMAGENAME,dev_imagename);
+                    values.put(DeviceDBProvider.KEY_LGCTYPE,dev_lgctype);
+                    values.put(DeviceDBProvider.KEY_POST,dev_post);
+                    values.put(DeviceDBProvider.KEY_LOST,dev_lost);
+
+                    cr.insert(DeviceDBProvider.CONTENT_URI,values);
+                }
+                else
+                {
+                    //modify record
+                    ContentValues values = new ContentValues();
+                    values.put(DeviceDBProvider.KEY_ALIAS,dev_alias);
+                    values.put(DeviceDBProvider.KEY_DETAILS,dev_desp);
+                    values.put(DeviceDBProvider.KEY_IMAGENAME,dev_imagename);
+                    values.put(DeviceDBProvider.KEY_LGCTYPE,dev_lgctype);
+
+                    DeviceDBProvider.updateRecord(cr,id,values);
+                }
+
+
+                c.close();
+            }
+        }
     }
 
     @Override

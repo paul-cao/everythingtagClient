@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,11 @@ public class GlobalDevList extends Activity {
         registerClickCallback(); /** register click effects */
 
         readUserInformation();
+
+
     }
+
+
 
     private void readUserInformation()
     {
@@ -161,6 +166,19 @@ public class GlobalDevList extends Activity {
         ArrayAdapter<HWDevice> adapter = new MyListAdapter();
         ListView list = (ListView) findViewById(R.id.dev_listview);
         list.setAdapter(adapter);
+
+        registerForContextMenu(list);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Context Menu");
+        menu.add(0, menu.FIRST, Menu.NONE,
+                "Remove from Cloud");
+
+
     }
 
     private class MyListAdapter extends ArrayAdapter<HWDevice> {
@@ -180,13 +198,26 @@ public class GlobalDevList extends Activity {
             final HWDevice currentLocDev = locDevList.get(position);
 
             // Fill the image by type
-            ImageView imageView = (ImageView)itemView.findViewById(R.id.item_icon);
             //imageView.setImageResource(currentLocDev.getImgID());
-            imageView.setImageBitmap(BitmapFactory.decodeFile(currentLocDev.getImageName()));
+
+            // Fill the image by type
+            ImageView imageView = (ImageView)itemView.findViewById(R.id.item_icon);
+
+            if (null ==  currentLocDev.getImageName())
+            {
+                imageView.setImageResource(R.drawable.bt);
+            }
+            else
+            {
+                //imageView.setImageResource(currentLocDev.getImgID());
+                imageView.setImageBitmap(BitmapFactory.decodeFile(currentLocDev.getImageName()));
+                //imageView.setClickable(true);
+                imageView.setFocusable(false);
+            }
 
             // local device name:
             TextView nameText = (TextView) itemView.findViewById(R.id.item_dev_alias);
-            nameText.setText(currentLocDev.getDevName());
+            nameText.setText(currentLocDev.getDisplayName());
 
 
 
@@ -324,10 +355,11 @@ public class GlobalDevList extends Activity {
         //        + " Which is hw called " + currentLocDev.getStrName();
         //Toast.makeText(LocalDevList.this, message, Toast.LENGTH_LONG).show();
         String urlInfo = "https://gglasspuppy.appspot.com/scanner/?";
-        urlInfo += "devtype=" + HWDevice.getItfString(currentLocDev.getHwItfType());
+        urlInfo += "devtype=" + String.valueOf(currentLocDev.getHwItfType());
         urlInfo += "&" + "macinfo=" + currentLocDev.getMacId();
         urlInfo += "&" + "username=" + userName;
-        urlInfo += "&" + "pass=" + password;
+        urlInfo += "&" + "pass=" + password ;
+        urlInfo += "&" + "logictype=" + String.valueOf(currentLocDev.getLogicType()) ;
 
         ContentResolver cr = GlobalDevList.this.getContentResolver();
         DeviceDBProvider.setDeviceCloudPost(cr,currentLocDev.getHwItfType(),currentLocDev.getMacId(),DeviceDBProvider.SETPOST_VALUE);
